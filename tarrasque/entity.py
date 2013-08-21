@@ -53,8 +53,9 @@ class BaseProperty(object):
     if passed is None:
       passed = []
 
-    module_name = sys._getframe(4).f_globals['__name__']
-    module_file = sys._getframe(4).f_globals.get('__file__')
+    module_name = sys._getframe(1).f_globals['__name__']
+    module_file = sys._getframe(1).f_globals.get('__file__')
+
     return TargetProperty(self, name, module_name, module_file, passed)
 
 class TargetProperty(BaseProperty):
@@ -68,6 +69,9 @@ class TargetProperty(BaseProperty):
     self.module_file = module_file
 
   def _find_target(self, name, module_name, module_file):
+    if not module_file:
+      module_file = ""
+
     if name.find(".") == -1:
       module = module_name
     else:
@@ -81,7 +85,7 @@ class TargetProperty(BaseProperty):
 
       if module:
         module = import_module(namespace).__name__
-    return getattr(sys.modules[module_name], name)
+    return getattr(sys.modules[module], name)
 
   def get_property(self, entity):
     # Hopefully an ehandle
