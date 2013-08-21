@@ -2,10 +2,21 @@ from .entity import *
 from .consts import *
 from .properties import *
 
+class PlayerResourceProperty(ArrayProperty):
+  def get_property(self, entity):
+    index = getattr(entity, self.index_var)
+    if index == NEGATIVE:
+      return None
+
+    ehandle, properties = entity.world.find_by_dt("DT_DOTA_PlayerResource")
+
+    # Work around a bug in skadi
+    key = (self.property_key[1], "%04d" % index)
+    return properties[key]
+
+@register_entity("DT_DOTAPlayer")
 class Player(DotaEntity):
-  def __init__(self, index, *args, **kwargs):
-    self.index = index
-    DotaEntity.__init__(self, *args, **kwargs)
+  index = Property("DT_DOTAPlayer", "m_iPlayerID")
 
   hero = ArrayProperty(
     # The key that the item can be found at
@@ -18,11 +29,17 @@ class Player(DotaEntity):
     passed={"self": "player"}
   )
 
-  reliable_gold = ArrayProperty("DT_DOTA_PlayerResource", "m_iReliableGold")
+  reliable_gold = PlayerResourceProperty(
+    "DT_DOTA_PlayerResource", "m_iReliableGold")
 
-  unreliable_gold = ArrayProperty("DT_DOTA_PlayerResource", "m_iUnreliableGold")
+  unreliable_gold = PlayerResourceProperty(
+    "DT_DOTA_PlayerResource", "m_iUnreliableGold")
 
-  name = ArrayProperty("DT_DOTA_PlayerResource", "m_iszPlayerNames")
+  name = PlayerResourceProperty(
+    "DT_DOTA_PlayerResource", "m_iszPlayerNames")
+
+  team = PlayerResourceProperty(
+    "DT_DOTA_PlayerResource", "m_iPlayerTeams").is_team()
 
   @property
   def total_gold(self):

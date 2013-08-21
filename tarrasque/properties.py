@@ -81,6 +81,8 @@ class ArrayProperty(Property):
 
   def get_property(self, entity):
     index = getattr(entity, self.index_var)
+    if index == NEGATIVE:
+      return None
 
     # Work around a bug in skadi
     key = (self.property_key[1], "%04d" % index)
