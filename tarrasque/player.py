@@ -13,7 +13,7 @@ class Player(DotaEntity):
     # array index in
   ).targets(
     # The "path" to the target class
-    "wrapper.hero.Hero",
+    "tarrasque.hero.Hero",
     passed={"self": "player"}
   )
 
