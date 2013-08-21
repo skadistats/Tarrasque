@@ -18,6 +18,19 @@ class BaseProperty(object):
 
     return EHandleProperty(self, passed)
 
+  def is_team(self):
+    # Use a closure!
+    chained = self
+    class TeamProperty(BaseProperty):
+      def get_property(self, entity):
+        value = chained.get_property(entity)
+        if value in TEAM_VALUES:
+          return TEAM_VALUES[value]
+        else:
+          raise ValueError("Unknown team value {}".format(value))
+
+    return TeamProperty()
+
 class EHandleProperty(BaseProperty):
   def __init__(self, chained_from, passed):
     self.chained = chained_from
