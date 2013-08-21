@@ -3,9 +3,9 @@ class StreamBinding(object):
   world = None
   tick = None
 
-  def __init__(self, demo):
+  def __init__(self, demo, start_tick=5000):
     self.demo = demo
-    self.go_to_tick(0)
+    self.go_to_tick(start_tick)
 
   def iter_ticks(self, start=None, end=None):
     if start is None:
@@ -49,10 +49,10 @@ class StreamBinding(object):
       return
 
   @staticmethod
-  def from_file(filename):
+  def from_file(filename, *args, **kwargs):
     from skadi.replay import demo as rd
     import io
 
     f = io.open(filename, "r+b")
     demo = rd.construct(f)
-    return StreamBinding(demo)
+    return StreamBinding(demo, *args, **kwargs)
