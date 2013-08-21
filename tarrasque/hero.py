@@ -24,7 +24,8 @@ class Hero(DotaEntity):
       cls_name = cls.name or cls.__name__
     else:
       cls_name = dt.replace("DT_DOTA_Unit_Hero_", "").replace(" ", "")
-      cls = type(cls_name, (Hero,), {})
+      cls = type(str(cls_name), (Hero,), {})
+      HERO_CLASSES[dt] = cls
 
     instance = DotaEntity.__new__(cls, *args, **kwargs)
     if not instance.name:
@@ -39,6 +40,32 @@ class Hero(DotaEntity):
   name = None
 
   current_xp = Property("DT_DOTA_BaseNPC_Hero", "m_iCurrentXP")
+
+  respawn_time = Property("DT_DOTA_BaseNPC_Hero", "m_flRespawnTime")
+
+  ability_points = Property("DT_DOTA_BaseNPC_Hero", "m_iAbilityPoints")
+
+  strength = Property("DT_DOTA_BaseNPC_Hero", "m_flStrength")
+
+  agility = Property("DT_DOTA_BaseNPC_Hero", "m_flAgility")
+
+  intellect = Property("DT_DOTA_BaseNPC_Hero", "m_flIntellect")
+
+  strength_total = Property("DT_DOTA_BaseNPC_Hero", "m_flStrengthTotal")
+
+  agility_total = Property("DT_DOTA_BaseNPC_Hero", "m_flAgilityTotal")
+
+  intellect_total = Property("DT_DOTA_BaseNPC_Hero", "m_flIntellectTotal")
+
+  recent_damage = Property("DT_DOTA_BaseNPC_Hero", "m_iRecentDamage")
+
+  player_id = Property("DT_DOTA_BaseNPC_Hero", "m_iPlayerID")
+
+  spawned_at = Property("DT_DOTA_BaseNPC_Hero", "m_flSpawnedAt")
+
+  replicating_hero = Property(
+    "DT_DOTA_BaseNPC_Hero", "m_hReplicatingOtherHeroModel"
+  ).targets("Hero")
 
 @register_hero_class("DT_DOTA_Unit_Hero_PhantomLancer")
 class PhantomLancer(Hero):
