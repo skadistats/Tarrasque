@@ -55,3 +55,10 @@ class DotaEntity(object):
       return False
     else:
       return True
+
+  @classmethod
+  def get_all(cls, binding):
+    output = []
+    for ehandle, _ in binding.world.find_all_by_dt(cls.dt_key).items():
+      output.append(cls(ehandle=ehandle, stream_binding=binding))
+    return output
