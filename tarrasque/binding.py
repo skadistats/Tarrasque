@@ -1,3 +1,4 @@
+
 class StreamBinding(object):
   # Just another layer of indirection
   world = None

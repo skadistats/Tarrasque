@@ -1,5 +1,6 @@
 from .entity import *
 from .consts import *
+from .properties import *
 
 class Player(DotaEntity):
   def __init__(self, index, *args, **kwargs):
@@ -11,9 +12,9 @@ class Player(DotaEntity):
     "DT_DOTA_PlayerResource", "m_hSelectedHero",
     # Not shown, default argument of "index"; the variable to find the
     # array index in
-  ).targets(
-    # The "path" to the target class
-    "tarrasque.hero.Hero",
+  ).is_ehandle(
+    # Members of the Player class we want passed to the target class's
+    # __init__
     passed={"self": "player"}
   )
 

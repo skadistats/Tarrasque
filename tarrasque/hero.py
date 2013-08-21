@@ -2,15 +2,10 @@ import re
 
 from .binding import *
 from .entity import *
+from .properties import *
 
-HERO_CLASSES = {}
-
-def register_hero_class(dt):
-  def inner(cls):
-    HERO_CLASSES[dt] = cls
-    return cls
-  return inner
-
+@register_entity("DT_DOTA_BaseNPC_Hero")
+@register_entity_wildcard("DT_DOTA_Unit_Hero_*")
 class Hero(DotaEntity):
   def __new__(cls, *args, **kwargs):
     ehandle = kwargs.get("ehandle")
@@ -19,13 +14,9 @@ class Hero(DotaEntity):
     world = stream_binding.world
     dt = world.recv_tables[world.classes[ehandle]].dt
 
-    if dt in HERO_CLASSES:
-      cls = HERO_CLASSES[dt]
-      cls_name = cls.name or cls.__name__
-    else:
-      cls_name = dt.replace("DT_DOTA_Unit_Hero_", "").replace(" ", "")
-      cls = type(str(cls_name), (Hero,), {})
-      HERO_CLASSES[dt] = cls
+    cls_name = dt.replace("DT_DOTA_Unit_Hero_", "").replace(" ", "")
+    cls = type(str(cls_name), (Hero,), {})
+    register_entity(dt)(cls)
 
     instance = DotaEntity.__new__(cls, *args, **kwargs)
     if not instance.name:
@@ -65,8 +56,4 @@ class Hero(DotaEntity):
 
   replicating_hero = Property(
     "DT_DOTA_BaseNPC_Hero", "m_hReplicatingOtherHeroModel"
-  ).targets("Hero")
-
-@register_hero_class("DT_DOTA_Unit_Hero_PhantomLancer")
-class PhantomLancer(Hero):
-  pass
+  ).is_ehandle()
