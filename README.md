@@ -7,6 +7,8 @@ objects. i.e. replays for humans.
 Example usage
 -------------
 
+For more examples, see the examples directory
+
     from tarrasque import *
     
     # Create a StreamBinding object; this object allows us to create
