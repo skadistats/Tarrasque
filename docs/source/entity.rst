@@ -1,8 +1,6 @@
 Dota Entity
 -----------
 
-.. module:: tarrasque.entity
-
 .. class:: DotaEntity(ehandle, stream_binding)
 
        A base class for all Tarrasque entity classes.
