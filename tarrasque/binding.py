@@ -34,19 +34,8 @@ class StreamBinding(object):
   def players(self):
     from . import Player
 
-    players = []
-    player_resource_dt = "DT_DOTA_PlayerResource"
-    ehandle, player_resource = self.world.find_by_dt(player_resource_dt)
-
-    # Player resource arrays have 32 elements
-    for index in range(32):
-      name = player_resource[("m_iszPlayerNames", "%04d" % index)]
-      if name == "":
-        break
-
-      player = Player(stream_binding=self, ehandle=ehandle, index=index)
-      players.append(player)
-    return players
+    return [p for p in Player.get_all(self) if
+            p.index != -1 and p.team != "spectator"]
 
   def go_to_tick(self, tick):
     for tick, _, world in self.demo.stream(tick=tick):
