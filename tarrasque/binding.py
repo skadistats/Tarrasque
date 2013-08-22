@@ -37,6 +37,13 @@ class StreamBinding(object):
     return [p for p in Player.get_all(self) if
             p.index != -1 and p.team != "spectator"]
 
+  @property
+  def rules(self):
+    from .gamerules import GameRules
+    rules = GameRules.get_all(self)
+    assert len(rules) == 1
+    return rules[0]
+
   def go_to_tick(self, tick):
     for tick, _, world in self.demo.stream(tick=tick):
       self.tick = tick
