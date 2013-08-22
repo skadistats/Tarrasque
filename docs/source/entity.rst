@@ -83,5 +83,5 @@ Dota Entity
                    # See tarrasque/hero.py for actual implementation
                    return cls(*args, **kwargs)
 
-     A wildcard registration will not override a specific DT registration via
-     :obj:`register_entity`.
+       A wildcard registration will not override a specific DT registration via
+       :obj:`register_entity`.
