@@ -60,3 +60,18 @@ the world. The current world can be accessed via :attr:`~DotaEntity.world`,
 and the results of ``world.find(self.ehandle)`` via
 :attr:`~DotaEntity.properties`. All this and more is documented on
 :class:`DotaEntity`.
+
+Tarrasque concepts for people who don't know what an ehandle is
+---------------------------------------------------------------
+
+Think of Tarrasque as an ORM for Dota2, except the models are already
+maintained, and all you have to do is something cool with them. You don't have
+to mess about writing code to deal with the (disgusting) stuff that Dota2 does
+in its replays, just like an ORM removes the need to write your own SQL to deal
+with the database. The one difference between an ORM and Tarrasque is that while
+most ORM models are statefull (that is, when the database changes, the model
+stays the same until reloaded), Tarrasque models contain no state, other than
+that which is needed to uniquely identify the instance (and now you know what an
+ehandle is). This means that you never have to do ``hero.update(tick_number)``
+or similar; all that is handle automatically. For more info on this, see
+:class:`StreamBinding`.

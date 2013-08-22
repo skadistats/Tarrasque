@@ -3,11 +3,11 @@ Stream Binding
 
 .. class:: StreamBinding(demo[, start_tick=5000])
 
-       The :class:`StreamBinding` class is Tarrasque's metaphor for the replay.
-       Every Tarrasque entity class has a reference to an instance of this
-       class, and when the tick of the instance changes, the data returned by
-       those classes changes. This makes it easy to handle complex object graphs
-       without explicitly needing to pass the Skadi demo object around.
+   The :class:`StreamBinding` class is Tarrasque's metaphor for the replay.
+   Every Tarrasque entity class has a reference to an instance of this
+   class, and when the tick of the instance changes, the data returned by
+   those classes changes. This makes it easy to handle complex object graphs
+   without explicitly needing to pass the Skadi demo object around.
 
    .. staticmethod:: from_file(filename, *args, **kwargs)
 
