@@ -32,6 +32,14 @@ class BaseProperty(object):
           raise ValueError("Unknown value map value {}".format(value))
     return ValueMapProperty()
 
+  def value_func(self, value_func):
+    chained = self
+    class ValueFuncProperty(BaseProperty):
+      def get_property(self, entity):
+        value = chained.get_property(entity)
+        return value_func(value)
+    return ValueFuncProperty()
+
 class EHandleProperty(BaseProperty):
   def __init__(self, chained_from, passed, set):
     self.chained = chained_from
