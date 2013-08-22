@@ -26,6 +26,11 @@ Dota Entity
 
           The ehandle of the entity. Used to identify the entity across ticks.
 
+   .. attribute:: dt_key
+
+          The dt name that corresponds to the DT class that the Tarrasque
+          DotaEntity subclass wraps.
+
    .. attribute:: stream_binding
 
           The :class:`StreamBinding` object that the entity is bound to. The
