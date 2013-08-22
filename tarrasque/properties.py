@@ -1,4 +1,5 @@
 from .consts import *
+from .utils import *
 
 class BaseProperty(object):
   def get_property(self, entity):
@@ -12,11 +13,13 @@ class BaseProperty(object):
     else:
       return self.get_property(entity)
 
-  def is_ehandle(self, passed=None):
+  def is_ehandle(self, passed=None, set=None):
     if passed is None:
-      passed = []
+      passed = {}
+    if set is None:
+      set = {}
 
-    return EHandleProperty(self, passed)
+    return EHandleProperty(self, passed, set)
 
   def is_team(self):
     # Use a closure!
@@ -32,9 +35,10 @@ class BaseProperty(object):
     return TeamProperty()
 
 class EHandleProperty(BaseProperty):
-  def __init__(self, chained_from, passed):
+  def __init__(self, chained_from, passed, set):
     self.chained = chained_from
-    self.passed = passed or {}
+    self.passed = passed
+    self.set = set
 
   def get_property(self, entity):
     assert entity.world, "EHandleProperty must be on class with stream binding"
@@ -54,7 +58,15 @@ class EHandleProperty(BaseProperty):
 
     target = self._find_target(ehandle, entity.world)
 
-    return target(**kwargs)
+    instance = target(**kwargs)
+
+    for from_, to_ in self.set.items():
+      if from_ == "self":
+        setattr(instance, to_, entity)
+      else:
+        setattr(instance, to_, getattr(entity, from_))
+
+    return instance
 
   def _find_target(self, ehandle, world):
     from . import entity
@@ -87,3 +99,17 @@ class ArrayProperty(Property):
     # Work around a bug in skadi
     key = (self.property_key[1], "%04d" % index)
     return entity.properties[key]
+
+class PositionProperty(BaseProperty):
+  def __init__(self, property_class, cellbits_class="DT_BaseEntity"):
+    self.prop = property_class
+    self.cellbits_class = cellbits_class
+
+  def get_property(self, entity):
+    prop = entity.properties
+    cell_x = prop[(self.prop, "m_cellX")]
+    cell_y = prop[(self.prop, "m_cellY")]
+    offset_x, offset_y = prop[(self.prop, "m_vecOrigin")]
+    cellbits = prop[(self.cellbits_class, "m_cellbits")]
+
+    return cell_to_coords(cell_x, cell_y, offset_x, offset_y, cellbits)

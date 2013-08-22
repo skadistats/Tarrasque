@@ -3,10 +3,11 @@ import re
 from .binding import *
 from .entity import *
 from .properties import *
+from .basenpc import *
 
 @register_entity("DT_DOTA_BaseNPC_Hero")
 @register_entity_wildcard("DT_DOTA_Unit_Hero_*")
-class Hero(DotaEntity):
+class Hero(BaseNPC):
   def __new__(cls, *args, **kwargs):
     ehandle = kwargs.get("ehandle")
     stream_binding = kwargs.get("stream_binding")
@@ -18,15 +19,12 @@ class Hero(DotaEntity):
     cls = type(str(cls_name), (Hero,), {})
     register_entity(dt)(cls)
 
-    instance = DotaEntity.__new__(cls, *args, **kwargs)
+    instance = object.__new__(cls, *args, **kwargs)
+    cls.__init__(instance, *args, **kwargs)
     if not instance.name:
       split_name = [s for s in re.split("([A-Z][^A-Z]*)", cls_name) if s]
       instance.name = " ".join(split_name)
     return instance
-
-  def __init__(self, player, *args, **kwargs):
-    self.player = player
-    DotaEntity.__init__(self, *args, **kwargs)
 
   name = None
 

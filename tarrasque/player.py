@@ -18,15 +18,14 @@ class PlayerResourceProperty(ArrayProperty):
 class Player(DotaEntity):
   index = Property("DT_DOTAPlayer", "m_iPlayerID")
 
-  hero = ArrayProperty(
+  hero = PlayerResourceProperty(
     # The key that the item can be found at
     "DT_DOTA_PlayerResource", "m_hSelectedHero",
     # Not shown, default argument of "index"; the variable to find the
     # array index in
   ).is_ehandle(
-    # Members of the Player class we want passed to the target class's
-    # __init__
-    passed={"self": "player"}
+    # Members of the Player class we want set on the target class' instances
+    set={"self": "player"}
   )
 
   reliable_gold = PlayerResourceProperty(
@@ -44,6 +43,3 @@ class Player(DotaEntity):
   @property
   def total_gold(self):
     return self.reliable_gold + self.unreliable_gold
-
-  def __str__(self):
-    return "Player({}, {})".format(self.player_index, self.name)
