@@ -38,7 +38,7 @@ class Player(DotaEntity):
     "DT_DOTA_PlayerResource", "m_iszPlayerNames")
 
   team = PlayerResourceProperty(
-    "DT_DOTA_PlayerResource", "m_iPlayerTeams").is_team()
+    "DT_DOTA_PlayerResource", "m_iPlayerTeams").value_map(TEAM_VALUES)
 
   @property
   def total_gold(self):

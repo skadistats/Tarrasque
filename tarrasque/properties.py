@@ -21,18 +21,16 @@ class BaseProperty(object):
 
     return EHandleProperty(self, passed, set)
 
-  def is_team(self):
-    # Use a closure!
+  def value_map(self, value_map):
     chained = self
-    class TeamProperty(BaseProperty):
+    class ValueMapProperty(BaseProperty):
       def get_property(self, entity):
         value = chained.get_property(entity)
-        if value in TEAM_VALUES:
-          return TEAM_VALUES[value]
+        if value in value_map:
+          return value_map[value]
         else:
-          raise ValueError("Unknown team value {}".format(value))
-
-    return TeamProperty()
+          raise ValueError("Unknown value map value {}".format(value))
+    return ValueMapProperty()
 
 class EHandleProperty(BaseProperty):
   def __init__(self, chained_from, passed, set):

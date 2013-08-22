@@ -8,3 +8,19 @@ TEAM_VALUES = {
   5: "spectator",
   0: None,
 }
+
+LIFE_STATE_VALUES = {
+  0: "alive",
+  1: "dying",
+  2: "dead",
+  3: "respawnable",
+  4: "discardbody"
+}
+
+GAME_STATE_VALUES = {
+  1: "loading",
+  2: "draft",
+  4: "pregame",
+  5: "game",
+  6: "postgame"
+}
