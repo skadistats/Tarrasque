@@ -6,7 +6,7 @@ from .consts import *
 class BaseNPC(DotaEntity):
   position = PositionProperty("DT_DOTA_BaseNPC")
 
-  life_state = Property("DT_DOTA_BaseNPC", "i_mLifeState")\
+  life_state = Property("DT_DOTA_BaseNPC", "m_lifeState")\
     .value_map(LIFE_STATE_VALUES)
 
   @property
