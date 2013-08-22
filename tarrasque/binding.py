@@ -7,15 +7,21 @@ class StreamBinding(object):
     self.demo = demo
     self.go_to_tick(start_tick)
 
-  def iter_ticks(self, start=None, end=None):
+  def iter_ticks(self, start=None, end=None, step=1):
     if start is None:
       start = self.tick
     if end is not None:
       assert start < end
 
+    last_tick = start - step - 1
     for tick, _, world in self.demo.stream(tick=start):
       if end is not None and tick >= end:
         break
+
+      if tick - last_tick < step:
+        continue
+      else:
+        last_tick = tick
 
       self.tick = tick
       self.world = world
