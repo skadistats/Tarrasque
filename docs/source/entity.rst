@@ -1,18 +1,9 @@
-Tarrasque Dota Entities
-=======================
-
-The :class:`DotaEntity` class is the base class for all Tarrasque entity
-classes. See individual classes documentation for details on their properties.
-
-Dota Entities:
-
-.. toctree::
-   :maxdepth: 2
-
-   gamerules
-
 Dota Entity
-===========
+-----------
+
+.. module:: tarrasque.entity
+   :synopsis: Contains the DotaEntity class and entity class registration
+              decorators
 
 .. class:: DotaEntity(ehandle, stream_binding)
 
@@ -29,7 +20,9 @@ Dota Entity
    .. attribute:: dt_key
 
           The dt name that corresponds to the DT class that the Tarrasque
-          DotaEntity subclass wraps.
+          :class:`DotaEntity` subclass wraps.
+
+          For :class:`DotaEntity` instances, this is ``"DT_BaseEntity"``
 
    .. attribute:: stream_binding
 
@@ -67,3 +60,28 @@ Dota Entity
           :class:`Player` instances will return 11 or more players, instead of
           the usual 10, where as :attr:`StreamBinding.players` returns the
           standard (and correct) 10.
+
+.. decorator:: register_entity(dt_key)
+
+       Register a class that Tarrasque will use to represent dota entities with
+       the given DT key. This class decorator automatically sets the
+       :attr:`~DotaEntity.dt_key` attribute.
+
+.. decorator:: register_entity_wildcard(regexp)
+
+       Similar to :obj:`register_entity`, will register a class, but instead of
+       specifying a specific DT, use a regular expression to specify a range of
+       DTs. For example, :class:`Hero` uses this to supply a model for all
+       heroes, i.e.::
+
+           from tarrasque.entity import *
+
+           @register_entity_wildcard("DT_DOTA_Unit_Hero_(.*)")
+           class Hero(DotaEntity):
+               def __new__(cls, *args, **kwargs):
+                   # Use __new__ to dynamically generate individual hero classes
+                   # See tarrasque/hero.py for actual implementation
+                   return cls(*args, **kwargs)
+
+     A wildcard registration will not override a specific DT registration via
+     :obj:`register_entity`.

@@ -13,7 +13,7 @@ Contents:
 
    intro
    binding
-   entity
+   entity_index
 
 
 Indices and tables

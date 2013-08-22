@@ -53,10 +53,10 @@ Tarrasque concepts for people who know what an ehandle is
 
 Tarrasque is a mapper between Dota2 entities (DT classes) and Python classes.
 Every Tarrasque class that represents an entity has a
-:attr:`DotaEntity.dt_key` property that specifies the DT class that it
+:attr:`~DotaEntity.dt_key` property that specifies the DT class that it
 represents, and once instantiated, every Tarrasque class has a
-:attr:`DotaEntity.ehandle` property that is used to get information from
-the world. The current world can be accessed via :attr:`DotaEntity.world`,
+:attr:`~DotaEntity.ehandle` property that is used to get information from
+the world. The current world can be accessed via :attr:`~DotaEntity.world`,
 and the results of ``world.find(self.ehandle)`` via
-:attr:`DotaEntity.properties`. All this and more is documented on
+:attr:`~DotaEntity.properties`. All this and more is documented on
 :class:`DotaEntity`.
