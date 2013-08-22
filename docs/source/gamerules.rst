@@ -1,6 +1,8 @@
 Game Rules
 ==========
 
+.. module:: tarrasque.gamerules
+
 .. class:: GameRules
 
        Inherits from :class:`DotaEntity`

@@ -2,8 +2,6 @@ Dota Entity
 -----------
 
 .. module:: tarrasque.entity
-   :synopsis: Contains the DotaEntity class and entity class registration
-              decorators
 
 .. class:: DotaEntity(ehandle, stream_binding)
 

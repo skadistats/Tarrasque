@@ -1,6 +1,8 @@
 Stream Binding
 ==============
 
+.. module:: tarrasque.binding
+
 .. class:: StreamBinding(demo[, start_tick=5000])
 
        The :class:`StreamBinding` class is Tarrasque's metaphor for the replay.
