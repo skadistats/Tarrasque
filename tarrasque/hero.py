@@ -28,7 +28,7 @@ class Hero(BaseNPC):
 
   name = None
 
-  current_xp = Property("DT_DOTA_BaseNPC_Hero", "m_iCurrentXP")
+  xp = Property("DT_DOTA_BaseNPC_Hero", "m_iCurrentXP")
 
   respawn_time = Property("DT_DOTA_BaseNPC_Hero", "m_flRespawnTime")
 

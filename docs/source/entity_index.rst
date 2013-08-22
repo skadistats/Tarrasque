@@ -12,3 +12,4 @@ Dota Entities:
    entity
    gamerules
    player
+   basenpc_index

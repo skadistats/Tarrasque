@@ -3,11 +3,11 @@ Game Rules
 
 .. class:: GameRules
 
-       Inherits from :class:`DotaEntity`
+   Inherits from :class:`DotaEntity`
 
-       The GameRules contains the macro state of the game; the stage of the game
-       that the tick is in, whether the tick is in day or night, the length of
-       the game, etc etc.
+   The GameRules contains the macro state of the game; the stage of the game
+   that the tick is in, whether the tick is in day or night, the length of
+   the game, etc etc.
 
    .. attribute:: game_state
 

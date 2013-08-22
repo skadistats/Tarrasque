@@ -3,11 +3,11 @@ Dota Entity
 
 .. class:: DotaEntity(ehandle, stream_binding)
 
-       A base class for all Tarrasque entity classes.
+   A base class for all Tarrasque entity classes.
 
-       If you plan to manually initialise this class or any class inheriting from
-       it (and I strongly recommend against it), pass initialisation arguments by
-       name.
+   If you plan to manually initialise this class or any class inheriting from
+   it (and I strongly recommend against it), pass initialisation arguments by
+   name.
 
    .. attribute:: ehandle
 

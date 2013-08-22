@@ -5,6 +5,9 @@ Player
 
    Inherits from :class:`DotaEntity`.
 
+   Represents a player in the game. This can be a player who is controlling a
+   hero, or a "player" that is spectating.
+
    .. attribute:: dt_key
 
       For :class:`Player`, ``"DT_DOTAPlayer"``. However, much of the information
@@ -15,6 +18,8 @@ Player
 
       The index of the player in the game. i.e. 0 is the first player on the
       radiant team, 9 is the last on the dire
+
+      This is -1 for the undefined player, which should be ignored.
 
    .. attribute:: hero
 
