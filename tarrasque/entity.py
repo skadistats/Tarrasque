@@ -62,3 +62,9 @@ class DotaEntity(object):
     for ehandle, _ in binding.world.find_all_by_dt(cls.dt_key).items():
       output.append(cls(ehandle=ehandle, stream_binding=binding))
     return output
+
+  def __eq__(self, other):
+    if hasattr(other, "ehandle"):
+      return other.ehandle == self.ehandle
+
+    return False
