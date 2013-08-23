@@ -25,6 +25,11 @@ BaseNPC
 
       ``"respawnable"`` and ``"discardbody"`` shouldn't occur in a Dota2 replay
 
+   .. attribute:: level
+
+      The NPC's level. See :attr:``Hero.ability_points`` for unspent level up
+      ability points.
+
    .. attribute:: is_alive
 
       A simple boolean to test that the :attr:`life_state` is ``"alive"``
