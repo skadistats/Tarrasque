@@ -45,6 +45,13 @@ Dota Entity
           illusion is killed, or at the start of a game when not all heroes have
           been chosen.
 
+   .. attribute:: team
+
+      The team that the entity is on. Options are
+
+      * ``"radiant"``
+      * ``"dire"``
+
    .. classmethod:: get_all(stream_binding)
 
           This method uses the class's :attr:`dt_key` attribute to find all

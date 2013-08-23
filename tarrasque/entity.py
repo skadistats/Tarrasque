@@ -4,6 +4,7 @@ import sys
 import re
 
 from .consts import *
+from .properties import *
 
 global ENTITY_CLASSES
 ENTITY_CLASSES = {}
@@ -31,6 +32,9 @@ class DotaEntity(object):
   def __init__(self, stream_binding, ehandle):
     self.stream_binding = stream_binding
     self.ehandle = ehandle
+
+  team = Property("DT_BaseEntity", "m_iTeamNum")\
+    .apply(MapTrans(TEAM_VALUES))
 
   @property
   def world(self):
