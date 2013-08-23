@@ -36,6 +36,9 @@ class DotaEntity(object):
   team = Property("DT_BaseEntity", "m_iTeamNum")\
     .apply(MapTrans(TEAM_VALUES))
 
+  name = Property("DT_BaseEntity", "m_iName")\
+    .apply(FuncTrans(lambda n: n if n else None))
+
   @property
   def world(self):
     return self.stream_binding.world

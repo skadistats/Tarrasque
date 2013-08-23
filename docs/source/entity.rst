@@ -52,6 +52,11 @@ Dota Entity
       * ``"radiant"``
       * ``"dire"``
 
+   .. attribute:: name
+
+      The name of the entity. Not guaranteed to be set for all entities, in
+      which case it should be overridden.
+
    .. classmethod:: get_all(stream_binding)
 
           This method uses the class's :attr:`dt_key` attribute to find all
