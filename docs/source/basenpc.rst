@@ -25,11 +25,23 @@ BaseNPC
 
       ``"respawnable"`` and ``"discardbody"`` shouldn't occur in a Dota2 replay
 
+   .. attribute:: is_alive
+
+      A simple boolean to test that the :attr:`life_state` is ``"alive"``
+
    .. attribute:: level
 
       The NPC's level. See :attr:``Hero.ability_points`` for unspent level up
       ability points.
 
-   .. attribute:: is_alive
+   .. attribute:: health
 
-      A simple boolean to test that the :attr:`life_state` is ``"alive"``
+      The NPC's current health points.
+
+   .. attribute:: health_regen
+
+      The NPC's health regen per second
+
+   .. attribute:: max_health
+
+      The NPC's maximum health

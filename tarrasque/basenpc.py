@@ -11,6 +11,12 @@ class BaseNPC(DotaEntity):
 
   level = Property("DT_DOTA_BaseNPC", "m_iCurrentLevel")
 
+  health = Property("DT_DOTA_BaseNPC", "m_iHealth")
+
+  max_health = Property("DT_DOTA_BaseNPC", "m_iMaxHealth")
+
+  health_regen = Property("DT_DOTA_BaseNPC", "m_flHealthThinkRegen")
+
   @property
   def is_alive(self):
     return self.life_state == "alive"
