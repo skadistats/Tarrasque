@@ -21,6 +21,45 @@ class BaseProperty(object):
         return int(val)
       return val
 
+  def map(self, chained):
+    self.exposed = False
+
+    map_prop = self
+    class MapProperty(ArrayProperty):
+      def __init__(self):
+        return
+
+      def get_value(self, entity):
+        output = []
+        vals = array_prop.get_value(entity)
+        if vals is None:
+          return
+
+        for value in vals:
+          output.append(chained.get_value(value))
+        return output
+    return MapProperty()
+
+  def filter(self, filter_func):
+    self.exposed = False
+
+    array_prop = self
+    class FilterProperty(ArrayProperty):
+      def __init__(self):
+        return
+
+      def get_value(self, entity):
+        output = []
+        vals = array_prop.get_value(entity)
+        if vals is None:
+          return
+
+        for value in vals:
+          if filter_func(value):
+            output.append(value)
+        return output
+    return FilterProperty()
+
 class ProviderProperty(BaseProperty):
   def used_by(self, chainer):
     chainer.set_chained(self)
@@ -76,45 +115,6 @@ class ArrayProperty(ExtractorProperty):
       output.append(key)
     return output
 
-  def apply(self, chained):
-    self.exposed = False
-
-    array_prop = self
-    class MapProperty(ArrayProperty):
-      def __init__(self):
-        return
-
-      def get_value(self, entity):
-        output = []
-        vals = array_prop.get_value(entity)
-        if vals is None:
-          return
-
-        for value in vals:
-          output.append(chained.get_value(value))
-        return output
-    return MapProperty()
-
-  def filter(self, filter_func):
-    self.exposed = False
-
-    array_prop = self
-    class FilterProperty(ArrayProperty):
-      def __init__(self):
-        return
-
-      def get_value(self, entity):
-        output = []
-        vals = array_prop.get_value(entity)
-        if vals is None:
-          return
-
-        for value in vals:
-          if filter_func(value):
-            output.append(value)
-        return output
-    return FilterProperty()
-
 class IndexedProperty(ExtractorProperty):
   def __init__(self, dt_class, dt_prop, index_val="index"):
     self.index_val = index_val
@@ -131,25 +131,28 @@ class IndexedProperty(ExtractorProperty):
 
     return props[(self.key[1], "%04d" % index)]
 
-class TransformerProperty(BaseProperty):
-  chained = None
-
-  def set_chained(self, chained):
-    self.chained = chained
-
-class PositionProperty(TransformerProperty):
+class PositionProperty(ExtractorProperty):
   def __init__(self, property_class, cellbits_class="DT_BaseEntity"):
     self.prop = property_class
     self.cellbits_class = cellbits_class
 
   def get_value(self, entity):
-    prop = self.get_properties(entity)
+    prop = self.chained.get_value(entity)
+    if prop is None:
+      return
+
     cell_x = prop[(self.prop, "m_cellX")]
     cell_y = prop[(self.prop, "m_cellY")]
     offset_x, offset_y = prop[(self.prop, "m_vecOrigin")]
     cellbits = prop[(self.cellbits_class, "m_cellbits")]
 
     return cell_to_coords(cell_x, cell_y, offset_x, offset_y, cellbits)
+
+class TransformerProperty(BaseProperty):
+  chained = None
+
+  def set_chained(self, chained):
+    self.chained = chained
 
 class MapTrans(TransformerProperty):
   def __init__(self, value_map):

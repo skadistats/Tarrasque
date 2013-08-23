@@ -27,15 +27,16 @@ from the :class:`Hero` and have different values for :attr:`~Hero.dt_key` and
 
    .. attribute:: respawn_time
 
-      TODO: figure out exactly what this is
+      Appears to be the absolute time that the hero respawns. See
+      :attr:`~GameRules.game_time` for the current time of the tick to compare.
+
+      TODO: Check this on IRC
 
    .. attribute:: ability_points
 
-      Most likely the number of ability points the player can assign.
-      Potentially how many they have assigned + unassigned, in which case it
-      would be equal to their level.
+      Seems to be the number of ability points the player can assign.
 
-      TODO: figure out exactly what this is
+      TODO: Check this on IRC
 
    .. attribute:: strength
    .. attribute:: agility
@@ -65,15 +66,15 @@ from the :class:`Hero` and have different values for :attr:`~Hero.dt_key` and
 
    .. attribute:: player_id
 
-      Probably correlates to :attr:`Player.index`
+      Equal to :attr:`Player.index`
 
-      TODO: figure out exactly what this is
+      TODO: Check this on IRC
 
    .. attribute:: spawned_at
 
-      The time(?) the hero spawned at? Prob, considering it can't be position.
+      The time (in :attr:`~GameRules.game_time` units) the hero spawned at.
 
-      TODO: figure out exactly what this is
+      TODO: Check this on IRC
 
    .. attribute:: replicating_hero
 
