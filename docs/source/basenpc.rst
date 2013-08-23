@@ -35,13 +35,13 @@ BaseNPC
       ability points.
 
    .. attribute:: health
-
-      The NPC's current health points.
-
    .. attribute:: health_regen
-
-      The NPC's health regen per second
-
    .. attribute:: max_health
 
-      The NPC's maximum health
+      The NPC's health statistics. Regen is per second.
+
+   .. attribute:: mana
+   .. attribute:: mana_regen
+   .. attribute:: max_mana
+
+      Much the same as the health stats, but for mana.
