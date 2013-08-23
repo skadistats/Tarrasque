@@ -17,6 +17,12 @@ class BaseNPC(DotaEntity):
 
   health_regen = Property("DT_DOTA_BaseNPC", "m_flHealthThinkRegen")
 
+  mana = Property("DT_DOTA_BaseNPC", "m_flMana")
+
+  max_mana = Property("DT_DOTA_BaseNPC", "m_flMaxMana")
+
+  mana_regen = Property("DT_DOTA_BaseNPC", "m_flManaThinkRegen")
+
   @property
   def is_alive(self):
     return self.life_state == "alive"

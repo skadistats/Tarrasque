@@ -31,7 +31,7 @@ BaseNPC
 
    .. attribute:: level
 
-      The NPC's level. See :attr:``Hero.ability_points`` for unspent level up
+      The NPC's level. See :attr:`Hero.ability_points` for unspent level up
       ability points.
 
    .. attribute:: health
