@@ -2,57 +2,188 @@ from .consts import *
 from .utils import *
 
 class BaseProperty(object):
-  def get_property(self, entity):
+  exposed = True
+
+  def get_value(self, entity):
     raise NotImplementedError()
 
   def __get__(self, entity, objtype=None):
+    if not self.exposed:
+      return self
+
     # Check if we're chaining the thing
-    if isinstance(entity, type(BaseProperty)):
+    if issubclass(type(entity), BaseProperty):
       return self
     # Otherwise run the property
     else:
-      return self.get_property(entity)
+      val = self.get_value(entity)
+      if isinstance(val, long):
+        return int(val)
+      return val
 
-  def is_ehandle(self, passed=None, set=None):
-    if passed is None:
-      passed = {}
-    if set is None:
-      set = {}
+class ProviderProperty(BaseProperty):
+  def used_by(self, chainer):
+    chainer.set_chained(self)
+    self.exposed = True
+    return chainer
 
-    return EHandleProperty(self, passed, set)
+class LocalProperty(ProviderProperty):
+  def get_value(self, entity):
+      return entity.properties
 
-  def value_map(self, value_map):
-    chained = self
-    class ValueMapProperty(BaseProperty):
-      def get_property(self, entity):
-        value = chained.get_property(entity)
-        if value in value_map:
-          return value_map[value]
-        else:
-          raise ValueError("Unknown value map value {}".format(value))
-    return ValueMapProperty()
+class RemoteProperty(ProviderProperty):
+  def __init__(self, dt_name):
+    self.dt = dt_name
 
-  def value_func(self, value_func):
-    chained = self
-    class ValueFuncProperty(BaseProperty):
-      def get_property(self, entity):
-        value = chained.get_property(entity)
-        return value_func(value)
-    return ValueFuncProperty()
+  def get_value(self, entity):
+    world = entity.world
+    _, properties = world.find_by_dt(self.dt)
+    return properties
 
-class EHandleProperty(BaseProperty):
-  def __init__(self, chained_from, passed, set):
-    self.chained = chained_from
-    self.passed = passed
-    self.set = set
+class ExtractorProperty(BaseProperty):
+  chained = LocalProperty()
 
-  def get_property(self, entity):
-    assert entity.world, "EHandleProperty must be on class with stream binding"
+  def set_chained(self, chained):
+    self.chained = chained
 
-    # Hopefully an ehandle
-    ehandle = self.chained.get_property(entity)
-    if ehandle == NEGATIVE:
+  def apply(self, chained):
+    chained.set_chained(self)
+    self.exposed = False
+    return chained
+
+class ValueProperty(ExtractorProperty):
+  def __init__(self, dt_class, dt_prop):
+    self.key = (dt_class, dt_prop)
+
+  def get_value(self, entity):
+    props = self.chained.get_value(entity)
+    return props[self.key]
+
+Property = ValueProperty
+
+class ArrayProperty(ExtractorProperty):
+  def __init__(self, dt_class, dt_prop, array_length=32):
+    self.array_length = array_length
+    self.key = (dt_class, dt_prop)
+
+  def get_value(self, entity):
+    props = self.chained.get_values(entity)
+    output = []
+    for i in range(self.array_length):
+      index_key = "%04d" % i
+      # key = (self.dt_key[0], self.dt_key[1] + "." + index_key)
+      key = (self.dt_key[1], index_key)
+      output.append(key)
+    return output
+
+  def apply(self, chained):
+    self.exposed = False
+
+    array_prop = self
+    class MapProperty(ArrayProperty):
+      def __init__(self):
+        return
+
+      def get_value(self, entity):
+        output = []
+        vals = array_prop.get_value(entity)
+        if vals is None:
+          return
+
+        for value in vals:
+          output.append(chained.get_value(value))
+        return output
+    return MapProperty()
+
+  def filter(self, filter_func):
+    self.exposed = False
+
+    array_prop = self
+    class FilterProperty(ArrayProperty):
+      def __init__(self):
+        return
+
+      def get_value(self, entity):
+        output = []
+        vals = array_prop.get_value(entity)
+        if vals is None:
+          return
+
+        for value in vals:
+          if filter_func(value):
+            output.append(value)
+        return output
+    return FilterProperty()
+
+class IndexedProperty(ExtractorProperty):
+  def __init__(self, dt_class, dt_prop, index_val="index"):
+    self.index_val = index_val
+    self.key = (dt_class, dt_prop)
+
+  def get_value(self, entity):
+    props = self.chained.get_value(entity)
+    if props is None:
       return
+
+    index = getattr(entity, self.index_val)
+    if index is None:
+      return
+
+    return props[(self.key[1], "%04d" % index)]
+
+class TransformerProperty(BaseProperty):
+  chained = None
+
+  def set_chained(self, chained):
+    self.chained = chained
+
+class PositionProperty(TransformerProperty):
+  def __init__(self, property_class, cellbits_class="DT_BaseEntity"):
+    self.prop = property_class
+    self.cellbits_class = cellbits_class
+
+  def get_value(self, entity):
+    prop = self.get_properties(entity)
+    cell_x = prop[(self.prop, "m_cellX")]
+    cell_y = prop[(self.prop, "m_cellY")]
+    offset_x, offset_y = prop[(self.prop, "m_vecOrigin")]
+    cellbits = prop[(self.cellbits_class, "m_cellbits")]
+
+    return cell_to_coords(cell_x, cell_y, offset_x, offset_y, cellbits)
+
+class MapTrans(TransformerProperty):
+  def __init__(self, value_map):
+    self.value_map = value_map
+
+  def get_value(self, entity):
+    raw = self.chained.get_value(entity)
+    if raw is None:
+      return
+
+    return self.value_map[raw]
+
+class FuncTrans(TransformerProperty):
+  def __init__(self, value_func):
+    self.value_func = value_func
+
+  def get_value(self, entity):
+    raw = self.chained.get_value(entity)
+    if raw is None:
+      return
+
+    return self.value_func(raw)
+
+class EntityTrans(TransformerProperty):
+  def __init__(self, passed=None, set=None):
+    self.passed = passed or dict()
+    self.set = set or dict()
+
+  def get_value(self, entity):
+    # Hopefully an ehandle
+    ehandle = self.chained.get_value(entity)
+    if ehandle == NEGATIVE or ehandle == None:
+      return
+
     kwargs = {}
     kwargs["ehandle"] = ehandle
     kwargs["stream_binding"] = entity.stream_binding
@@ -84,38 +215,3 @@ class EHandleProperty(BaseProperty):
         return cls
 
     return entity.create_default_class(dt_name, world)
-
-class Property(BaseProperty):
-  def __init__(self, property_class, property_name):
-    self.property_key = (property_class, property_name)
-
-  def get_property(self, entity):
-    return entity.properties[self.property_key]
-
-class ArrayProperty(Property):
-  def __init__(self, property_class, property_name, index_var="index"):
-    self.index_var = index_var
-    Property.__init__(self, property_class, property_name)
-
-  def get_property(self, entity):
-    index = getattr(entity, self.index_var)
-    if index == NEGATIVE:
-      return None
-
-    # Work around a bug in skadi
-    key = (self.property_key[1], "%04d" % index)
-    return entity.properties[key]
-
-class PositionProperty(BaseProperty):
-  def __init__(self, property_class, cellbits_class="DT_BaseEntity"):
-    self.prop = property_class
-    self.cellbits_class = cellbits_class
-
-  def get_property(self, entity):
-    prop = entity.properties
-    cell_x = prop[(self.prop, "m_cellX")]
-    cell_y = prop[(self.prop, "m_cellY")]
-    offset_x, offset_y = prop[(self.prop, "m_vecOrigin")]
-    cellbits = prop[(self.cellbits_class, "m_cellbits")]
-
-    return cell_to_coords(cell_x, cell_y, offset_x, offset_y, cellbits)

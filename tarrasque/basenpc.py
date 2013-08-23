@@ -7,7 +7,7 @@ class BaseNPC(DotaEntity):
   position = PositionProperty("DT_DOTA_BaseNPC")
 
   life_state = Property("DT_DOTA_BaseNPC", "m_lifeState")\
-    .value_map(LIFE_STATE_VALUES)
+    .apply(MapTrans(LIFE_STATE_VALUES))
 
   @property
   def is_alive(self):

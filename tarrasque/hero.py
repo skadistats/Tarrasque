@@ -54,4 +54,4 @@ class Hero(BaseNPC):
 
   replicating_hero = Property(
     "DT_DOTA_BaseNPC_Hero", "m_hReplicatingOtherHeroModel"
-  ).is_ehandle()
+  ).apply(EntityTrans())

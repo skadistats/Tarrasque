@@ -16,29 +16,25 @@ class PlayerResourceProperty(ArrayProperty):
 
 @register_entity("DT_DOTAPlayer")
 class Player(DotaEntity):
-  index = Property("DT_DOTAPlayer", "m_iPlayerID")
+  index = Property("DT_DOTAPlayer", "m_iPlayerID")\
+    .apply(FuncTrans(lambda i: None if i == -1 else i))
 
-  hero = PlayerResourceProperty(
-    # The key that the item can be found at
-    "DT_DOTA_PlayerResource", "m_hSelectedHero",
-    # Not shown, default argument of "index"; the variable to find the
-    # array index in
-  ).is_ehandle(
-    # Members of the Player class we want set on the target class' instances
-    set={"self": "player"}
-  )
+  hero = RemoteProperty("DT_DOTA_PlayerResource")\
+    .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_hSelectedHero"))\
+    .apply(EntityTrans(set={"self": "player"}))
 
-  reliable_gold = PlayerResourceProperty(
-    "DT_DOTA_PlayerResource", "m_iReliableGold")
+  reliable_gold = RemoteProperty("DT_DOTA_PlayerResource")\
+    .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iReliableGold"))
 
-  unreliable_gold = PlayerResourceProperty(
-    "DT_DOTA_PlayerResource", "m_iUnreliableGold")
+  unreliable_gold = RemoteProperty("DT_DOTA_PlayerResource")\
+    .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iUnreliableGold"))
 
-  name = PlayerResourceProperty(
-    "DT_DOTA_PlayerResource", "m_iszPlayerNames")
+  name = RemoteProperty("DT_DOTA_PlayerResource")\
+    .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iszPlayerNames"))
 
-  team = PlayerResourceProperty(
-    "DT_DOTA_PlayerResource", "m_iPlayerTeams").value_map(TEAM_VALUES)
+  team = RemoteProperty("DT_DOTA_PlayerResource")\
+    .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iPlayerTeams"))\
+    .apply(MapTrans(TEAM_VALUES))
 
   @property
   def total_gold(self):

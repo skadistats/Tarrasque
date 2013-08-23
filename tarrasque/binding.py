@@ -35,7 +35,7 @@ class StreamBinding(object):
     from . import Player
 
     return [p for p in Player.get_all(self) if
-            p.index != -1 and p.team != "spectator"]
+            p.index != None and p.team != "spectator"]
 
   @property
   def rules(self):
