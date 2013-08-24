@@ -51,3 +51,11 @@ Player
       * ``"radiant"``
       * ``"dire"``
       * ``"spectator"``
+
+   .. attribute:: last_hits
+
+      The number of last hits on creeps that the player has.
+
+   .. attribute:: denies
+
+      The number of denies on creeps that the player has.

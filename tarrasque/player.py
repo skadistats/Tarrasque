@@ -36,6 +36,12 @@ class Player(DotaEntity):
     .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iPlayerTeams"))\
     .apply(MapTrans(TEAM_VALUES))
 
+  last_hits = RemoteProperty("DT_DOTA_PlayerResource")\
+    .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iLastHitCount"))
+
+  denies = RemoteProperty("DT_DOTA_PlayerResource")\
+    .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iDenyCount"))
+
   @property
   def total_gold(self):
     return self.reliable_gold + self.unreliable_gold
