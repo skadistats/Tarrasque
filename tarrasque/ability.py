@@ -34,7 +34,3 @@ class BaseAbility(DotaEntity):
             if ability == self:
                 index = i
         return index == len(hero.abilities) - 2 # -1 for 0, -1 for stats
-
-    @property
-    def is_castable(self):
-        return self.level > 0 and not self.is_on_cooldown and self.owner.mana > self.mana_cost

@@ -35,19 +35,9 @@ Ability
       The distance from the hero's position that this spell can be cast/targeted
       at.
 
-   .. attribute:: is_passive
-
-      Assumes that passives are the only spells with zero mana cost.
-
-      TODO: Check this on IRC
-
    .. attribute:: is_ultimate
 
       Use's the abilities position in :attr:``Hero.abilities`` to figure out if
       this is the ultimate ability.
 
       TODO: Check this is reliable
-
-   .. attribute:: is_castable
-
-      Can the ability be casted on an enemy in this tick.
