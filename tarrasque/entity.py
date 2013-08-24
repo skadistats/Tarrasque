@@ -39,6 +39,9 @@ class DotaEntity(object):
   name = Property("DT_BaseEntity", "m_iName")\
     .apply(FuncTrans(lambda n: n if n else None))
 
+  owner = Property("DT_BaseEntity", "m_hOwnerEntity")\
+    .apply(EntityTrans())
+
   @property
   def world(self):
     return self.stream_binding.world

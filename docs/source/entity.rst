@@ -57,6 +57,11 @@ Dota Entity
       The name of the entity. Not guaranteed to be set for all entities, in
       which case it should be overridden.
 
+   .. attribute:: owner
+
+      The "owner" of the entity. For example, a :class:`BaseAbility` the hero
+      that has that ability as its owner.
+
    .. classmethod:: get_all(stream_binding)
 
           This method uses the class's :attr:`dt_key` attribute to find all

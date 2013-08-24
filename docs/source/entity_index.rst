@@ -13,3 +13,4 @@ Dota Entities:
    gamerules
    player
    basenpc_index
+   ability

@@ -86,6 +86,12 @@ from the :class:`Hero` and have different values for :attr:`~Hero.dt_key` and
       However, this is still a useful property for tracking illusion creation
       chains
 
+   .. attribute:: abilities
+
+      A list of the hero's abilities. See :class:`BaseAbility`. Note that
+      abilities that have not been learnt, in addition to "stats" will show up
+      here.
+
 .. rubric:: Footnotes
 
 .. [#f1] The term replicating is a misnomer, as the replicating_hero property

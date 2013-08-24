@@ -23,6 +23,10 @@ class BaseNPC(DotaEntity):
 
   mana_regen = Property("DT_DOTA_BaseNPC", "m_flManaThinkRegen")
 
+  abilities = ArrayProperty("DT_DOTA_BaseNPC", "m_hAbilities", array_length=16)\
+    .filter(lambda h: h != NEGATIVE)\
+    .map(EntityTrans())
+
   @property
   def is_alive(self):
     return self.life_state == "alive"

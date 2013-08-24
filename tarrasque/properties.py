@@ -30,13 +30,17 @@ class BaseProperty(object):
         return
 
       def get_value(self, entity):
-        output = []
-        vals = array_prop.get_value(entity)
+        vals = map_prop.get_value(entity)
         if vals is None:
           return
 
+        output = []
         for value in vals:
-          output.append(chained.get_value(value))
+          class PseudoProp(object):
+            def get_value(self, entity):
+              return value
+          chained.chained = PseudoProp()
+          output.append(chained.get_value(entity))
         return output
     return MapProperty()
 
@@ -106,13 +110,13 @@ class ArrayProperty(ExtractorProperty):
     self.key = (dt_class, dt_prop)
 
   def get_value(self, entity):
-    props = self.chained.get_values(entity)
+    props = self.chained.get_value(entity)
     output = []
     for i in range(self.array_length):
       index_key = "%04d" % i
-      # key = (self.dt_key[0], self.dt_key[1] + "." + index_key)
-      key = (self.dt_key[1], index_key)
-      output.append(key)
+      # key = (self.key[0], self.key[1] + "." + index_key)
+      key = (self.key[1], index_key)
+      output.append(props[key])
     return output
 
 class IndexedProperty(ExtractorProperty):
@@ -217,4 +221,4 @@ class EntityTrans(TransformerProperty):
       if regexp.match(dt):
         return cls
 
-    return entity.create_default_class(dt_name, world)
+    return entity.create_default_class(dt, world)
