@@ -21,7 +21,7 @@ class Player(DotaEntity):
 
   hero = RemoteProperty("DT_DOTA_PlayerResource")\
     .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_hSelectedHero"))\
-    .apply(EntityTrans(set={"self": "player"}))
+    .apply(EntityTrans())
 
   reliable_gold = RemoteProperty("DT_DOTA_PlayerResource")\
     .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iReliableGold"))

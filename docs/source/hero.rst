@@ -64,11 +64,9 @@ from the :class:`Hero` and have different values for :attr:`~Hero.dt_key` and
 
       TODO: figure out exactly what this is
 
-   .. attribute:: player_id
+   .. attribute:: player
 
-      Equal to :attr:`Player.index`
-
-      TODO: Check this on IRC
+      The player that is playing the hero.
 
    .. attribute:: spawned_at
 

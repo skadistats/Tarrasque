@@ -48,10 +48,14 @@ class Hero(BaseNPC):
 
   recent_damage = Property("DT_DOTA_BaseNPC_Hero", "m_iRecentDamage")
 
-  player_id = Property("DT_DOTA_BaseNPC_Hero", "m_iPlayerID")
-
   spawned_at = Property("DT_DOTA_BaseNPC_Hero", "m_flSpawnedAt")
 
   replicating_hero = Property(
     "DT_DOTA_BaseNPC_Hero", "m_hReplicatingOtherHeroModel"
   ).apply(EntityTrans())
+
+  _player_id = Property("DT_DOTA_BaseNPC_Hero", "m_iPlayerID")
+
+  @property
+  def player(self):
+    return self.stream_binding.players[self._player_id]
