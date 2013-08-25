@@ -35,6 +35,9 @@ class Player(DotaEntity):
   name = RemoteProperty("DT_DOTA_PlayerResource")\
     .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iszPlayerNames"))
 
+  steam_id = RemoteProperty("DT_DOTA_PlayerResource")\
+    .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iPlayerSteamIDs"))
+
   team = RemoteProperty("DT_DOTA_PlayerResource")\
     .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iPlayerTeams"))\
     .apply(MapTrans(TEAM_VALUES))

@@ -50,6 +50,10 @@ Player
 
       The Steam name of the player, at the time of the game being played.
 
+   .. attribute:: steam_id
+
+      The Steam ID of the player.
+
    .. attribute:: team
 
       The player's team. Possible values are
