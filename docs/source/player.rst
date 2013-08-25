@@ -88,7 +88,14 @@ Player
 
    .. attribute:: buyback_cooldown_time
 
-      The :attr:``~GameRules.game_time`` that the player can buy back.
+      The time that a buyback will go on cooldown for? Or the time
+      when it comes off cooldown?
+
+      TODO: Sort out this
+
+   .. attribute:: last_buyback_time
+
+      The :attr:``~GameRules.game_time`` that the player bought back.
 
    .. attribute:: has_buyback
 

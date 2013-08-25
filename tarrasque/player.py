@@ -64,10 +64,13 @@ class Player(DotaEntity):
     .used_by(IndexedProperty("DT_DOTA_PlayerResource",
                              "m_flBuybackCooldownTime"))
 
+  last_buyback_time = RemoteProperty("DT_DOTA_PlayerResource")\
+    .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iLastBuybackTime"))
+
   @property
   def has_buyback(self):
     current_time = self.stream_binding.rules.game_time
-    return current_time >= self.buyback_cooldown_time
+    return current_time >= self.buyback_cooldown_time + self.last_buyback_time
 
   @property
   def total_gold(self):
