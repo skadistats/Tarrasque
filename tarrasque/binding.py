@@ -14,14 +14,14 @@ class StreamBinding(object):
     """
     The Skadi wold object for the current tick.
     """
-    return self._world
+    return self._stream.world
 
   @property
   def tick(self):
     """
     The current tick.
     """
-    return self._tick
+    return self._stream.tick
 
   @property
   def demo(self):
@@ -29,6 +29,20 @@ class StreamBinding(object):
     The Skadi demo object that the binding is reading from.
     """
     return self._demo
+
+  @property
+  def modifiers(self):
+    """
+    The Skadi modifiers object for the tick.
+    """
+    return self._stream.modifiers
+
+  @property
+  def string_tables(self):
+    """
+    The string_table provided by Skadi.
+    """
+    return self._stream.string_tables
 
   def __init__(self, demo, start_tick=5000):
     self._demo = demo
@@ -61,7 +75,8 @@ class StreamBinding(object):
       assert start < end
 
     last_tick = start - step - 1
-    for tick, _, world in self.demo.stream(tick=start):
+    self._stream = self.demo.stream(tick=start)
+    for tick, _, _ in self._stream:
       if end is not None and tick >= end:
         break
 
@@ -70,8 +85,6 @@ class StreamBinding(object):
       else:
         last_tick = tick
 
-      self._tick = tick
-      self._world = world
       yield tick
 
   def __iter__(self):
@@ -102,10 +115,7 @@ class StreamBinding(object):
     """
     Moves too the given tick, or the nearest tick after it.
     """
-    for tick, _, world in self.demo.stream(tick=tick):
-      self._tick = tick
-      self._world = world
-      return
+    self._stream = self.demo.stream(tick=tick)
 
   @staticmethod
   def from_file(filename, *args, **kwargs):
