@@ -40,6 +40,12 @@ Player
 
       The sum of the player's reliable and unreliable gold.
 
+   .. attribute:: net_worth
+
+      The net worth of the player.
+
+      TODO: Check this is actually the net worth
+
    .. attribute:: name
 
       The Steam name of the player, at the time of the game being played.
@@ -59,3 +65,15 @@ Player
    .. attribute:: denies
 
       The number of denies on creeps that the player has.
+
+   .. attribute:: kills
+
+      The number of hero kills the player has.
+
+   .. attribute:: deaths
+
+      The number of times the player has died.
+
+   .. attribute:: assists
+
+      The number of assists the player has.
