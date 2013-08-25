@@ -103,8 +103,8 @@ class StreamBinding(object):
     Moves too the given tick, or the nearest tick after it.
     """
     for tick, _, world in self.demo.stream(tick=tick):
-      self.tick = tick
-      self.world = world
+      self._tick = tick
+      self._world = world
       return
 
   @staticmethod
