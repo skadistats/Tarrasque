@@ -12,7 +12,7 @@ class BaseProperty(object):
       return self
 
     # Check if we're chaining the thing
-    if issubclass(type(entity), BaseProperty):
+    if issubclass(type(entity), BaseProperty) or entity is None:
       return self
     # Otherwise run the property
     else:

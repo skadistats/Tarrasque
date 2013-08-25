@@ -12,9 +12,7 @@ Contents:
    :maxdepth: 2
 
    intro
-   binding
-   entity_index
-
+   api
 
 Indices and tables
 ==================

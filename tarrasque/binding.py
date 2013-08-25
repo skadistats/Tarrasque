@@ -1,13 +1,60 @@
 class StreamBinding(object):
+  """
+  The StreamBinding class is Tarrasque's metaphor for the replay. Every
+  Tarrasque entity class has a reference to an instance of this
+  class, and when the tick of the instance changes, the data returned by
+  those classes changes. This makes it easy to handle complex object graphs
+  without explicitly needing to pass the Skadi demo object around.
+  """
+
   # Just another layer of indirection
-  world = None
-  tick = None
+  # These are properties for autodoc reasons mostly
+  @property
+  def world(self):
+    """
+    The Skadi wold object for the current tick.
+    """
+    return self._world
+
+  @property
+  def tick(self):
+    """
+    The current tick.
+    """
+    return self._tick
+
+  @property
+  def demo(self):
+    """
+    The Skadi demo object that the binding is reading from.
+    """
+    return self._demo
 
   def __init__(self, demo, start_tick=5000):
-    self.demo = demo
+    self._demo = demo
     self.go_to_tick(start_tick)
 
   def iter_ticks(self, start=None, end=None, step=1):
+    """
+    A generator that iterates through the demo's ticks and updates the
+    :class:`StreamBinding` to that tick. Yields the current tick.
+
+    The start parameter defines the tick to iterate from, and if not set,
+    the :attr:`StreamBinding.tick` attribute will be used.
+
+    The end parameter defines the point to stop iterating; if not set,
+    the iteration will continue until the end of the replay.
+
+    .. note:: The end of the replay includes the post game results screen, so if
+              you want to iterate until the ancient dies, check
+              :attr:`GameRules.game_state`.
+
+    The step parameter is the number of ticks to consume before yielding
+    the tick; the default of one means that every tick will be yielded. Do
+    not assume that the step is precise; the gap between two ticks will
+    always be larger than the step, but usually not equal to it.
+    """
+
     if start is None:
       start = self.tick
     if end is not None:
@@ -23,8 +70,8 @@ class StreamBinding(object):
       else:
         last_tick = tick
 
-      self.tick = tick
-      self.world = world
+      self._tick = tick
+      self._world = world
       yield tick
 
   def __iter__(self):
@@ -32,6 +79,10 @@ class StreamBinding(object):
 
   @property
   def players(self):
+    """
+    A list of :class:`Player` objects, one for each player in the game.
+    This excludes spectators and other non-hero-controlling players.
+    """
     from . import Player
 
     return [p for p in Player.get_all(self) if
@@ -39,12 +90,18 @@ class StreamBinding(object):
 
   @property
   def rules(self):
+    """
+    The :class:`GameRules` object for the replay.
+    """
     from .gamerules import GameRules
     rules = GameRules.get_all(self)
     assert len(rules) == 1
     return rules[0]
 
   def go_to_tick(self, tick):
+    """
+    Moves too the given tick, or the nearest tick after it.
+    """
     for tick, _, world in self.demo.stream(tick=tick):
       self.tick = tick
       self.world = world
@@ -52,6 +109,10 @@ class StreamBinding(object):
 
   @staticmethod
   def from_file(filename, *args, **kwargs):
+    """
+    Loads the demo from the filename, and then initialises the
+    :class:`StreamBinding` with it, along with any other passed arguments.
+    """
     from skadi.replay import demo as rd
     import io
 

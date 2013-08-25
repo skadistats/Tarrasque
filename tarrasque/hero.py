@@ -8,6 +8,11 @@ from .basenpc import *
 @register_entity("DT_DOTA_BaseNPC_Hero")
 @register_entity_wildcard("DT_DOTA_Unit_Hero_*")
 class Hero(BaseNPC):
+  """
+  While all hero classes inherit from this class, it is unlikely that this class
+  will ever need to be instantiated.
+  """
+
   def __new__(cls, *args, **kwargs):
     ehandle = kwargs.get("ehandle")
     stream_binding = kwargs.get("stream_binding")
@@ -27,35 +32,94 @@ class Hero(BaseNPC):
     return instance
 
   name = None
+  """
+  The name of the hero. For the base :class:`Hero` class, this is ``None``,
+  but it is set when a subclass is created in the __new__ method.
+  """
 
   xp = Property("DT_DOTA_BaseNPC_Hero", "m_iCurrentXP")
+  """
+  The hero's experience.
+  """
 
   respawn_time = Property("DT_DOTA_BaseNPC_Hero", "m_flRespawnTime")
+  """
+  Appears to be the absolute time that the hero respawns. See
+  :attr:`~GameRules.game_time` for the current time of the tick to compare.
+
+  TODO: Check this on IRC
+  """
 
   ability_points = Property("DT_DOTA_BaseNPC_Hero", "m_iAbilityPoints")
+  """
+  Seems to be the number of ability points the player can assign.
+
+  TODO: Check this on IRC
+  """
 
   strength = Property("DT_DOTA_BaseNPC_Hero", "m_flStrength")
+  """
+  The hero's natural strength.
+  """
 
   agility = Property("DT_DOTA_BaseNPC_Hero", "m_flAgility")
+  """
+  The hero's natural agility
+  """
 
   intellect = Property("DT_DOTA_BaseNPC_Hero", "m_flIntellect")
+  """
+  The hero's natural intellect.
+  """
 
   strength_total = Property("DT_DOTA_BaseNPC_Hero", "m_flStrengthTotal")
+  """
+  The hero's total strength (natural + items).
+  """
 
   agility_total = Property("DT_DOTA_BaseNPC_Hero", "m_flAgilityTotal")
+  """
+  The hero's total agility (natural + items).
+  """
 
   intellect_total = Property("DT_DOTA_BaseNPC_Hero", "m_flIntellectTotal")
+  """
+  The hero's total agility (natural + items).
+  """
 
   recent_damage = Property("DT_DOTA_BaseNPC_Hero", "m_iRecentDamage")
+  """
+  Recent damage taken? Would make sense for figuring out when to cancel
+  tranquils and stuff.
+
+  TODO: figure out exactly what this is
+  """
 
   spawned_at = Property("DT_DOTA_BaseNPC_Hero", "m_flSpawnedAt")
+  """
+  The time (in :attr:`~GameRules.game_time` units) the hero spawned at.
+
+  TODO: Check this in game.
+  """
 
   replicating_hero = Property(
     "DT_DOTA_BaseNPC_Hero", "m_hReplicatingOtherHeroModel"
   ).apply(EntityTrans())
+  """
+  The :class:`Hero` the current hero is "replicating" [#f1]_. If the instance
+  is not an illusion (which use the :class:`Hero` class also), this will be
+  ``None``. There is no guarantee that that this hero will exist (see
+  :attr:`DotaEntity.exists`) if the hero is someone like Phantom Lancer, who
+  may have an illusion which creates other illusions, and then dies.
+  However, this is still a useful property for tracking illusion creation
+  chains
+  """
 
   _player_id = Property("DT_DOTA_BaseNPC_Hero", "m_iPlayerID")
 
   @property
   def player(self):
+    """
+    The player that is playing the hero.
+    """
     return self.stream_binding.players[self._player_id]

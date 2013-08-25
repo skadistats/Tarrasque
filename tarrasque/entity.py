@@ -12,6 +12,11 @@ global ENTITY_WILDCARDS
 ENTITY_WILDCARDS = []
 
 def register_entity(dt_name):
+  """
+  Register a class that Tarrasque will use to represent dota entities with
+  the given DT key. This class decorator automatically sets the
+  :attr:``~DotaEntity.dt_key`` attribute.
+  """
   def inner(cls):
     ENTITY_CLASSES[dt_name] = cls
     cls.dt_key = dt_name
@@ -19,6 +24,24 @@ def register_entity(dt_name):
   return inner
 
 def register_entity_wildcard(regexp):
+  """
+  Similar to :obj:`register_entity`, will register a class, but instead of
+  specifying a specific DT, use a regular expression to specify a range of
+  DTs. For example, :class:`Hero` uses this to supply a model for all
+  heroes, i.e.::
+
+      from tarrasque.entity import *
+
+      @register_entity_wildcard("DT_DOTA_Unit_Hero_(.*)")
+      class Hero(DotaEntity):
+          def __new__(cls, *args, **kwargs):
+               # Use __new__ to dynamically generate individual hero classes
+               # See tarrasque/hero.py for actual implementation
+               return cls(*args, **kwargs)
+
+  A wildcard registration will not override a specific DT registration via
+  :obj:`register_entity`.
+  """
   def inner(cls):
     ENTITY_WILDCARDS.append((re.compile(regexp), cls))
     return cls
@@ -29,25 +52,69 @@ def create_default_class(dt_name, world):
 
 @register_entity("DT_BaseEntity")
 class DotaEntity(object):
+  """
+  A base class for all Tarrasque entity classes.
+
+  If you plan to manually initialise this class or any class inheriting from
+  it (and I strongly recommend against it), pass initialisation arguments by
+  name.
+  """
+
   def __init__(self, stream_binding, ehandle):
-    self.stream_binding = stream_binding
-    self.ehandle = ehandle
+    self._stream_binding = stream_binding
+    self._ehandle = ehandle
 
   team = Property("DT_BaseEntity", "m_iTeamNum")\
     .apply(MapTrans(TEAM_VALUES))
+  """
+  The team that the entity is on. Options are
+
+  * ``"radiant"``
+  * ``"dire"``
+  """
 
   name = Property("DT_BaseEntity", "m_iName")\
     .apply(FuncTrans(lambda n: n if n else None))
+  """
+  The name of the entity. Not guaranteed to be set for all entities, in
+  which case it should be overridden.
+  """
 
   owner = Property("DT_BaseEntity", "m_hOwnerEntity")\
     .apply(EntityTrans())
+  """
+  The "owner" of the entity. For example, a :class:``BaseAbility`` the hero
+  that has that ability as its owner.
+  """
+
+  @property
+  def ehandle(self):
+    """
+    The ehandle of the entity. Used to identify the entity across ticks.
+    """
+    return self._ehandle
+
+  @property
+  def stream_binding(self):
+    """
+    The :class:`StreamBinding` object that the entity is bound to. The
+    source of all information in a Tarrasque entity class.
+    """
+    return self._stream_binding
 
   @property
   def world(self):
+    """
+    The world object for the current tick. Accessed via
+    :attr:``stream_binding``.
+    """
     return self.stream_binding.world
 
   @property
   def tick(self):
+    """
+    The current tick number.
+    """
     return self.stream_binding.tick
 
   @property
@@ -59,6 +126,12 @@ class DotaEntity(object):
 
   @property
   def exists(self):
+    """
+    True if the ehandle exists in the current tick's world. Examples of
+    this not being true are when a :class:`Hero` entity that represents an
+    illusion is killed, or at the start of a game when not all heroes have
+    been chosen.
+    """
     try:
       self.world.find(self.ehandle)
     except KeyError:
@@ -68,6 +141,17 @@ class DotaEntity(object):
 
   @classmethod
   def get_all(cls, binding):
+    """
+    This method uses the class's :attr:`dt_key` attribute to find all
+    instances of the class in the stream binding's current tick, and then
+    initialise them and return them as a list.
+
+    While this method seems easy enough to use, prefer other methods where
+    possible. For example, using this function to find all
+    :class:`Player` instances will return 11 or more players, instead of
+    the usual 10, where as :attr:`StreamBinding.players` returns the
+    standard (and correct) 10.
+    """
     output = []
     for ehandle, _ in binding.world.find_all_by_dt(cls.dt_key).items():
       output.append(cls(ehandle=ehandle, stream_binding=binding))
