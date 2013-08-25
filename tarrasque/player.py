@@ -54,6 +54,15 @@ class Player(DotaEntity):
   assists = RemoteProperty("DT_DOTA_PlayerResource")\
     .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iAssists"))
 
+  buyback_cooldown_time = RemoteProperty("DT_DOTA_PlayerResource")\
+    .used_by(IndexedProperty("DT_DOTA_PlayerResource",
+                             "m_flBuybackCooldownTime"))
+
+  @property
+  def has_buyback(self):
+    current_time = self.stream_binding.rules.game_time
+    return current_time >= self.buyback_cooldown_time
+
   @property
   def total_gold(self):
     return self.reliable_gold + self.unreliable_gold

@@ -77,3 +77,11 @@ Player
    .. attribute:: assists
 
       The number of assists the player has.
+
+   .. attribute:: buyback_cooldown_time
+
+      The :attr:``~GameRules.game_time`` that the player can buy back.
+
+   .. attribute:: has_buyback
+
+      Can the player buyback (regardless of their being alive or dead).
