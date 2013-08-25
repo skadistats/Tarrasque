@@ -57,6 +57,9 @@ class Player(DotaEntity):
   assists = RemoteProperty("DT_DOTA_PlayerResource")\
     .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iAssists"))
 
+  streak = RemoteProperty("DT_DOTA_PlayerResource")\
+    .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iStreak"))
+
   buyback_cooldown_time = RemoteProperty("DT_DOTA_PlayerResource")\
     .used_by(IndexedProperty("DT_DOTA_PlayerResource",
                              "m_flBuybackCooldownTime"))

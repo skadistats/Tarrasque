@@ -82,6 +82,10 @@ Player
 
       The number of assists the player has.
 
+   .. attribute:: streak
+
+      The current kill-streak the user is on
+
    .. attribute:: buyback_cooldown_time
 
       The :attr:``~GameRules.game_time`` that the player can buy back.
