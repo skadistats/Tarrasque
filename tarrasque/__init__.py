@@ -1,5 +1,7 @@
 from .binding import *
 from .entity import *
+from .modifier import *
+
 from .player import *
 from .hero import *
 from .gamerules import *

@@ -21,6 +21,11 @@ class BaseProperty(object):
         return int(val)
       return val
 
+  def apply(self, chained):
+    chained.set_chained(self)
+    self.exposed = False
+    return chained
+
   def map(self, chained):
     self.exposed = False
 
@@ -103,6 +108,17 @@ class ValueProperty(ExtractorProperty):
     return props[self.key]
 
 Property = ValueProperty
+
+class ModifierProperty(ExtractorProperty):
+  def __init__(self, key):
+    self.key = key
+
+  def get_value(self, modifier):
+    props = self.chained.get_value(modifier)
+    if props is None:
+      return
+
+    return props.get(self.key, None)
 
 class ArrayProperty(ExtractorProperty):
   def __init__(self, dt_class, dt_prop, array_length=32):
@@ -222,3 +238,15 @@ class EntityTrans(TransformerProperty):
         return cls
 
     return entity.create_default_class(dt, world)
+
+class StringTableTrans(TransformerProperty):
+  def __init__(self, table_key):
+    self.key = table_key
+
+  def get_value(self, entity):
+    val = self.chained.get_value(entity)
+    if val is None:
+      return
+
+    table = entity.stream_binding.string_tables[self.key]
+    return table.by_index.get(val, None)
