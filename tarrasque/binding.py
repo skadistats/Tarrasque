@@ -105,7 +105,7 @@ class StreamBinding(object):
       if self.tick - last_tick < step:
         continue
       else:
-        last_tick = tick
+        last_tick = self.tick
 
       yield self.tick
 
