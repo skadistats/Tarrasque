@@ -1,3 +1,9 @@
+import collections
+
+Snapshot = collections.namedtuple("Snapshot",
+                                  "tick, user_messages, game_events, world,"
+                                  " modifiers")
+
 class StreamBinding(object):
   """
   The StreamBinding class is Tarrasque's metaphor for the replay. Every
@@ -76,7 +82,7 @@ class StreamBinding(object):
 
     last_tick = start - step - 1
     for snapshot in self.demo.stream(tick=start):
-      self._snapshot = snapshot
+      self._snapshot = Snapshot(*snapshot)
 
       if end is not None and self.tick >= end:
         break
@@ -92,7 +98,7 @@ class StreamBinding(object):
     """
     Moves too the given tick, or the nearest tick after it.
     """
-    self._snapshot = next(iter(self.demo.stream(tick=tick)))
+    self._snapshot = Snapshot(*next(iter(self.demo.stream(tick=tick))))
 
   def __iter__(self):
     return self.iter_ticks()
