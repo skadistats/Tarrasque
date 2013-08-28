@@ -14,14 +14,14 @@ class StreamBinding(object):
     """
     The Skadi wold object for the current tick.
     """
-    return self._stream.world
+    return self._snapshot.world
 
   @property
   def tick(self):
     """
     The current tick.
     """
-    return self._stream.tick
+    return self._snapshot.tick
 
   @property
   def demo(self):
@@ -35,14 +35,14 @@ class StreamBinding(object):
     """
     The Skadi modifiers object for the tick.
     """
-    return self._stream.modifiers
+    return self._snapshot.modifiers
 
   @property
   def string_tables(self):
     """
     The string_table provided by Skadi.
     """
-    return self._stream.string_tables
+    return self._snapshot.string_tables
 
   def __init__(self, demo, start_tick=5000):
     self._demo = demo
@@ -75,17 +75,24 @@ class StreamBinding(object):
       assert start < end
 
     last_tick = start - step - 1
-    self._stream = self.demo.stream(tick=start)
-    for tick, _, _ in self._stream:
-      if end is not None and tick >= end:
+    for snapshot in self.demo.stream(tick=start):
+      self._snapshot = snapshot
+
+      if end is not None and self.tick >= end:
         break
 
-      if tick - last_tick < step:
+      if self.tick - last_tick < step:
         continue
       else:
         last_tick = tick
 
-      yield tick
+      yield self.tick
+
+  def go_to_tick(self, tick):
+    """
+    Moves too the given tick, or the nearest tick after it.
+    """
+    self._snapshot = next(iter(self.demo.stream(tick=tick)))
 
   def __iter__(self):
     return self.iter_ticks()
@@ -111,11 +118,6 @@ class StreamBinding(object):
     assert len(rules) == 1
     return rules[0]
 
-  def go_to_tick(self, tick):
-    """
-    Moves too the given tick, or the nearest tick after it.
-    """
-    self._stream = self.demo.stream(tick=tick)
 
   @staticmethod
   def from_file(filename, *args, **kwargs):
@@ -123,9 +125,11 @@ class StreamBinding(object):
     Loads the demo from the filename, and then initialises the
     :class:`StreamBinding` with it, along with any other passed arguments.
     """
-    from skadi.replay import demo as rd
+    import skadi, skadi.demo
     import io
 
     f = io.open(filename, "r+b")
-    demo = rd.construct(f)
+    prologue = skadi.load(f)
+    demo = skadi.demo.construct(prologue, f)
+
     return StreamBinding(demo, *args, **kwargs)
