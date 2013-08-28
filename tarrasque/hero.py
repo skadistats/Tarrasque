@@ -57,34 +57,34 @@ class Hero(BaseNPC):
   TODO: Check this on IRC
   """
 
-  strength = Property("DT_DOTA_BaseNPC_Hero", "m_flStrength")
+  natural_strength = Property("DT_DOTA_BaseNPC_Hero", "m_flStrength")
   """
-  The hero's natural strength.
-  """
-
-  agility = Property("DT_DOTA_BaseNPC_Hero", "m_flAgility")
-  """
-  The hero's natural agility
+  The hero's strength from levels.
   """
 
-  intellect = Property("DT_DOTA_BaseNPC_Hero", "m_flIntellect")
+  natural_agility = Property("DT_DOTA_BaseNPC_Hero", "m_flAgility")
   """
-  The hero's natural intellect.
-  """
-
-  strength_total = Property("DT_DOTA_BaseNPC_Hero", "m_flStrengthTotal")
-  """
-  The hero's total strength (natural + items).
+  The hero's agility from levels.
   """
 
-  agility_total = Property("DT_DOTA_BaseNPC_Hero", "m_flAgilityTotal")
+  natural_intelligence = Property("DT_DOTA_BaseNPC_Hero", "m_flIntellect")
   """
-  The hero's total agility (natural + items).
+  The hero's intelligence from levels.
   """
 
-  intellect_total = Property("DT_DOTA_BaseNPC_Hero", "m_flIntellectTotal")
+  strength = Property("DT_DOTA_BaseNPC_Hero", "m_flStrengthTotal")
   """
-  The hero's total agility (natural + items).
+  The hero's strength (from levels, items, and the attribute bonus).
+  """
+
+  agility = Property("DT_DOTA_BaseNPC_Hero", "m_flAgilityTotal")
+  """
+  The hero's agility (from levels, items, and the attribute bonus).
+  """
+
+  intelligence = Property("DT_DOTA_BaseNPC_Hero", "m_flIntellectTotal")
+  """
+  The hero's intelligence (from levels, items, and the attribute bonus).
   """
 
   recent_damage = Property("DT_DOTA_BaseNPC_Hero", "m_iRecentDamage")

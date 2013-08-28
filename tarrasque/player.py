@@ -42,12 +42,11 @@ class Player(DotaEntity):
   The player's unreliable gold.
   """
 
-  net_worth = RemoteProperty("DT_DOTA_PlayerResource")\
+  earned_gold = RemoteProperty("DT_DOTA_PlayerResource")\
     .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iTotalEarnedGold"))
   """
-  The net worth of the player.
-
-  TODO: Check this is actually the net worth
+  The total earned gold by the user. This is not net worth; it should be used to
+  calculate gpm and stuff.
   """
 
   name = RemoteProperty("DT_DOTA_PlayerResource")\
