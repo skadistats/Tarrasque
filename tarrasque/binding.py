@@ -48,7 +48,7 @@ class StreamBinding(object):
     """
     The string_table provided by Skadi.
     """
-    return self._snapshot.string_tables
+    return self._stream.string_tables
 
   def __init__(self, demo, start_tick=5000):
     self._demo = demo
@@ -81,7 +81,8 @@ class StreamBinding(object):
       assert start < end
 
     last_tick = start - step - 1
-    for snapshot in self.demo.stream(tick=start):
+    self._stream = self.demo.stream(tick=start)
+    for snapshot in self._stream:
       self._snapshot = Snapshot(*snapshot)
 
       if end is not None and self.tick >= end:
@@ -98,7 +99,8 @@ class StreamBinding(object):
     """
     Moves too the given tick, or the nearest tick after it.
     """
-    self._snapshot = Snapshot(*next(iter(self.demo.stream(tick=tick))))
+    self._stream = self.demo.stream(tick=tick)
+    self._snapshot = Snapshot(*next(iter(self._stream)))
 
   def __iter__(self):
     return self.iter_ticks()
