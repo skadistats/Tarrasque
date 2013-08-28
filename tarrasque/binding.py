@@ -13,6 +13,20 @@ class StreamBinding(object):
   without explicitly needing to pass the Skadi demo object around.
   """
 
+  @property
+  def user_messages(self):
+    """
+    The user messages for the current tick.
+    """
+    return self._snapshot.user_messages
+
+  @property
+  def game_events(self):
+    """
+    The game events in the current tick.
+    """
+    return self._snapshot.game_events
+
   # Just another layer of indirection
   # These are properties for autodoc reasons mostly
   @property
