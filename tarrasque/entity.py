@@ -139,6 +139,22 @@ class DotaEntity(object):
     else:
       return True
 
+  @property
+  def modifiers(self):
+    """
+    A list of the entitiy's modifiers. While this does not make sense on some
+    entities, as modifiers can be associated with any entity, this is
+    implemented here.
+    """
+    from .modifier import Modifier
+    mhandles = self.stream_binding.modifiers.by_parent.get(self.ehandle, [])
+
+    modifiers = []
+    for mhandle in mhandles:
+      modifier = Modifier(mhandle=mhandle, stream_binding=self.stream_binding)
+      modifiers.append(modifier)
+    return modifiers
+
   @classmethod
   def get_all(cls, binding):
     """
