@@ -112,10 +112,8 @@ class Player(DotaEntity):
     .used_by(IndexedProperty("DT_DOTA_PlayerResource",
                              "m_flBuybackCooldownTime"))
   """
-  The time that a buyback will go on cooldown for? Or the time
-  when it comes off cooldown?
-
-  TODO: Sort out this
+  The game time that the buyback will come off cooldown. If this is 0, the
+  player has not bought back.
   """
 
   last_buyback_time = RemoteProperty("DT_DOTA_PlayerResource")\
@@ -130,7 +128,7 @@ class Player(DotaEntity):
     Can the player buyback (regardless of their being alive or dead).
     """
     current_time = self.stream_binding.rules.game_time
-    return current_time >= self.buyback_cooldown_time + self.last_buyback_time
+    return current_time >= self.buyback_cooldown_time
 
   @property
   def total_gold(self):
