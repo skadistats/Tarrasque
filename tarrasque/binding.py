@@ -131,12 +131,12 @@ class StreamBinding(object):
             p.index != None and p.team != "spectator"]
 
   @property
-  def rules(self):
+  def info(self):
     """
-    The :class:`GameRules` object for the replay.
+    The :class:`GameInfo` object for the replay.
     """
-    from .gamerules import GameRules
-    rules = GameRules.get_all(self)
+    from .gameinfo import GameInfo
+    rules = GameInfo.get_all(self)
     assert len(rules) == 1
     return rules[0]
 
@@ -147,11 +147,8 @@ class StreamBinding(object):
     Loads the demo from the filename, and then initialises the
     :class:`StreamBinding` with it, along with any other passed arguments.
     """
-    import skadi, skadi.demo
-    import io
+    import skadi.demo
 
-    f = io.open(filename, "r+b")
-    prologue = skadi.load(f)
-    demo = skadi.demo.construct(prologue, f)
+    demo = skadi.demo.construct(filename)
 
     return StreamBinding(demo, *args, **kwargs)

@@ -4,11 +4,11 @@ from .properties import *
 from .utils import *
 
 @register_entity("DT_DOTAGamerulesProxy")
-class GameRules(DotaEntity):
+class GameInfo(DotaEntity):
   """
   Inherits from :class:`DotaEntity`
 
-  The GameRules contains the macro state of the game; the stage of the game
+  The GameInfo contains the macro state of the game; the stage of the game
   that the tick is in, whether the tick is in day or night, the length of
   the game, etc etc.
   """

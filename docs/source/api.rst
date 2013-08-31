@@ -19,10 +19,10 @@ Player
 .. automodule:: tarrasque.player
    :members:
 
-Game Rules
-----------
+Game Info
+---------
 
-.. automodule:: tarrasque.gamerules
+.. automodule:: tarrasque.gameinfo
    :members:
 
 Ability
