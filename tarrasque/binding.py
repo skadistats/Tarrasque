@@ -96,6 +96,9 @@ class StreamBinding(object):
     if end is not None:
       assert start < end
 
+    if tick > self.demo.file_info.playback_ticks or tick < 0:
+      raise IndexError("Tick {} out of range".format(tick))
+
     last_tick = start - step - 1
     self._stream = self.demo.stream(tick=start)
     for snapshot in self._stream:
@@ -125,6 +128,9 @@ class StreamBinding(object):
       tick = self.demo.file_info.playback_ticks - 2
     elif tick == "start":
       tick = 0
+
+    if tick > self.demo.file_info.playback_ticks or tick < 0:
+      raise IndexError("Tick {} out of range".format(tick))
 
     self._stream = self.demo.stream(tick=tick)
     self._snapshot = Snapshot(*next(iter(self._stream)))
