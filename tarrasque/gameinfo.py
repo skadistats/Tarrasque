@@ -123,3 +123,10 @@ class GameInfo(DotaEntity):
   """
   The winner of the game.
   """
+
+  @property
+  def replay_length(self):
+    """
+    The length in seconds of the replay.
+    """
+    return self.stream_binding.demo.file_info.playback_time
