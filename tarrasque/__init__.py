@@ -4,7 +4,7 @@ from .modifier import *
 
 from .player import *
 from .hero import *
-from .gamerules import *
+from .gameinfo import *
 from .ability import *
 
 __version__ = "0.1"

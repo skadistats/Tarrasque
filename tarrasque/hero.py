@@ -45,7 +45,7 @@ class Hero(BaseNPC):
   respawn_time = Property("DT_DOTA_BaseNPC_Hero", "m_flRespawnTime")
   """
   Appears to be the absolute time that the hero respawns. See
-  :attr:`~GameRules.game_time` for the current time of the tick to compare.
+  :attr:`~GameInfo.game_time` for the current time of the tick to compare.
 
   TODO: Check this on IRC
   """
@@ -97,7 +97,7 @@ class Hero(BaseNPC):
 
   spawned_at = Property("DT_DOTA_BaseNPC_Hero", "m_flSpawnedAt")
   """
-  The time (in :attr:`~GameRules.game_time` units) the hero spawned at.
+  The time (in :attr:`~GameInfo.game_time` units) the hero spawned at.
 
   TODO: Check this in game.
   """

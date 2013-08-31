@@ -26,7 +26,7 @@ class Player(DotaEntity):
   """
   The :class:`Hero` that the player is playing in the tick. May be ``None``
   if the player has yet to choose a hero. May change when the
-  :attr:`~GameRules.game_state` is ``"pre_game"``, due to players swapping
+  :attr:`~GameInfo.game_state` is ``"pre_game"``, due to players swapping
   their heroes.
   """
 
@@ -119,7 +119,7 @@ class Player(DotaEntity):
   last_buyback_time = RemoteProperty("DT_DOTA_PlayerResource")\
     .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iLastBuybackTime"))
   """
-  The :attr:`~GameRules.game_time` that the player bought back.
+  The :attr:`~GameInfo.game_time` that the player bought back.
   """
 
   @property
@@ -127,7 +127,7 @@ class Player(DotaEntity):
     """
     Can the player buyback (regardless of their being alive or dead).
     """
-    current_time = self.stream_binding.rules.game_time
+    current_time = self.stream_binding.info.game_time
     return current_time >= self.buyback_cooldown_time
 
   @property

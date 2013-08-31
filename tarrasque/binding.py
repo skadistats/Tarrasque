@@ -4,6 +4,8 @@ Snapshot = collections.namedtuple("Snapshot",
                                   "tick, user_messages, game_events, world,"
                                   " modifiers")
 
+TICKS_PER_SECOND = 30
+
 class StreamBinding(object):
   """
   The StreamBinding class is Tarrasque's metaphor for the replay. Every
@@ -81,7 +83,7 @@ class StreamBinding(object):
 
     .. note:: The end of the replay includes the post game results screen, so if
               you want to iterate until the ancient dies, check
-              :attr:`GameRules.game_state`.
+              :attr:`GameInfo.game_state`.
 
     The step parameter is the number of ticks to consume before yielding
     the tick; the default of one means that every tick will be yielded. Do
@@ -111,10 +113,36 @@ class StreamBinding(object):
 
   def go_to_tick(self, tick):
     """
-    Moves too the given tick, or the nearest tick after it.
+    Moves too the given tick, or the nearest tick after it. Accepts certain
+    special values of tick:
+
+    * ``"end"`` - Move to the last tick in the replay
+    * ``"start"`` - Move to the first tick in the replay
+
+    Returns the tick moved to.
     """
+    if tick == "end":
+      tick = self.demo.file_info.playback_ticks - 2
+    elif tick == "start":
+      tick = 0
+
     self._stream = self.demo.stream(tick=tick)
     self._snapshot = Snapshot(*next(iter(self._stream)))
+
+    return self.tick
+
+  def go_to_time(self, time):
+    """
+    Moves to the tick with the given game time. Could potentially overshoot,
+    but not by too much. Will not undershoot.
+
+    Returns the tick it has moved to.
+    """
+    current_time = self.info.game_time
+    target_tick = int(self.tick + (time - current_time) / TICKS_PER_SECOND) - 2
+    for tick in self.iter_ticks(start=target_tick):
+      if self.info.game_time > time:
+        return tick
 
   def __iter__(self):
     return self.iter_ticks()
@@ -136,9 +164,9 @@ class StreamBinding(object):
     The :class:`GameInfo` object for the replay.
     """
     from .gameinfo import GameInfo
-    rules = GameInfo.get_all(self)
-    assert len(rules) == 1
-    return rules[0]
+    info = GameInfo.get_all(self)
+    assert len(info) == 1
+    return info[0]
 
 
   @staticmethod

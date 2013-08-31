@@ -26,10 +26,10 @@ class BaseAbility(DotaEntity):
     @property
     def is_on_cooldown(self):
         """
-        Uses :attr:`off_cooldown_time` and :attr:`GameRules.game_time` to
+        Uses :attr:`off_cooldown_time` and :attr:`GameInfo.game_time` to
         calculate if the ability is on cooldown or not.
         """
-        current_time = self.stream_binding.rules.game_time
+        current_time = self.stream_binding.info.game_time
         return current_time <= self.off_cooldown_time
 
     cooldown_length = Property("DT_DOTABaseAbility", "m_flCooldownLength")
