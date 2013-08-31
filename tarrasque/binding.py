@@ -96,7 +96,7 @@ class StreamBinding(object):
     if end is not None:
       assert start < end
 
-    if tick > self.demo.file_info.playback_ticks or tick < 0:
+    if start > self.demo.file_info.playback_ticks or start < 0:
       raise IndexError("Tick {} out of range".format(tick))
 
     last_tick = start - step - 1
