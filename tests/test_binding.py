@@ -33,3 +33,7 @@ class StreamBindingConstantTestCase(unittest.TestCase):
 
   def test_number_of_players(self):
     eq_(len(self.replay.players), 10)
+
+  def test_no_spectators_in_players(self):
+    for player in self.replay.players:
+      in_(player.team, ["radiant", "dire"])
