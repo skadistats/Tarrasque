@@ -145,7 +145,7 @@ class StreamBinding(object):
     Returns the tick it has moved to.
     """
     current_time = self.info.game_time
-    target_tick = int(self.tick + (time - current_time) / TICKS_PER_SECOND) - 2
+    target_tick = int(self.tick + (time - current_time) * TICKS_PER_SECOND) - 2
     for tick in self.iter_ticks(start=target_tick):
       if self.info.game_time > time:
         return tick
