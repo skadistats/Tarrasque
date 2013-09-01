@@ -1,0 +1,11 @@
+language: python
+python:
+  - "2.7"
+install:
+  - sudo apt-get install libsnappy1 libsnappy-dev libprotobuf7 libprotoc7 protobuf-compiler
+  - pip install bitstring==3.1.2 python-snappy==0.5 protobuf==2.5
+  - git clone https://github.com/skadistats/skadi.git
+  - pushd skadi
+  - python setup.py install
+  - popd
+script: nosetests
