@@ -29,7 +29,8 @@ class StreamBindingConstantTestCase(unittest.TestCase):
   REPLAY_FILE = "./demo/PL.dem"
 
   def setUp(self):
-    self.replay = tarrasque.StreamBinding.from_file(self.REPLAY_FILE, 20000)
+    self.replay = tarrasque.StreamBinding.from_file(self.REPLAY_FILE,
+                                                    start_tick="game")
 
   def test_number_of_players(self):
     eq_(len(self.replay.players), 10)
@@ -37,3 +38,7 @@ class StreamBindingConstantTestCase(unittest.TestCase):
   def test_no_spectators_in_players(self):
     for player in self.replay.players:
       in_(player.team, ["radiant", "dire"])
+
+  def test_player_heroes(self):
+    for player in self.replay.players:
+      neq_(player.hero, None)
