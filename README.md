@@ -21,7 +21,7 @@ Very basic example, but should show the power of Tarrasque
 
     from tarrasque import *
 
-    replay = StreamBinding.from_file("./demo/PL.dem", 10000)
+    replay = StreamBinding.from_file("./demo/PL.dem", start_tick="game")
     for player in replay.players:
         print "{} is playing {}".format(player.name, player.hero.name)
 
@@ -31,8 +31,11 @@ Very basic example, but should show the power of Tarrasque
 
     # Create a StreamBinding object; this object allows us to create
     # "views" onto the replay data. Using the from_file, we pass it
-    # the name of the replay file, and the tick we want to start at.
-    replay = StreamBinding.from_file("./demo/PL.dem", 5000)
+    # the name of the replay file, and the "tick" we want to start
+    # at. However, instead of giving a precise tick, we pass "game",
+    # which tells the StreamBinding to start from the tick where the
+    # game time hits 0
+    replay = StreamBinding.from_file("./demo/PL.dem", start_tick="game")
 
     for player in replay.players:
         print "{} is playing {}".format(player.name, player.hero.name)
