@@ -64,15 +64,10 @@ Very basic example, but should show the power of Tarrasque
     gold_data = []
     tick_data = []
 
-    # iter_ticks can iterate the ticks from 0, starting at a specific
-    # tick, or between two ticks. Here we give it just a starting tick,
-    # so it will iterate until the game has finished.
-    for tick in replay.iter_ticks(5000):
-        # We don't want to plot every tick, as there will be a ton
-        # where nothing happens. There are roughly 30 ticks per
-        # second, so we run this loop one a second
-        if tick % 30 > 2:
-            continue
+    # Start at "game" which is the time the game clock hits 0, stop at
+    # "postgame", which is when the ancient is destroyed. Step of 30
+    # so we only sample data once a second
+    for tick in replay.iter_ticks(start="game", end="postgame", step=30):
 
         # Players have gold, not heroes. This deals with people
         # swapping heroes and stuff.
