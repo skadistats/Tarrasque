@@ -2,7 +2,7 @@ import unittest
 
 import tarrasque
 
-class StreamBindingTestCase(unittest.TestCase):
+class StreamBindingMovementTestCase(unittest.TestCase):
   REPLAY_FILE = "./demo/PL.dem"
 
   def setUp(self):
@@ -15,3 +15,9 @@ class StreamBindingTestCase(unittest.TestCase):
   def test_go_to_tick(self):
     self.replay.go_to_tick(2000)
     assert self.replay.tick >= 2000 and self.replay.tick <= 2002
+
+  def test_go_to_end(self):
+    self.replay.go_to_tick("end")
+    ticks_left = self.replay.demo.file_info.playback_ticks - self.replay.tick
+    assert abs(ticks_left) < 3
+    assert ticks_left >= 0
