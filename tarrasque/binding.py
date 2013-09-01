@@ -13,6 +13,19 @@ class StreamBinding(object):
   class, and when the tick of the instance changes, the data returned by
   those classes changes. This makes it easy to handle complex object graphs
   without explicitly needing to pass the Skadi demo object around.
+
+  .. note:: Where methods on this class take absolute tick values (i.e. the
+     ``start`` and ``end`` arguments to :meth:`iter_ticks`), special string
+     arguments may be passed. These are:
+
+     * ``"start"`` - The start of the replay
+     * ``"draft"`` - The start of the draft
+     * ``"pregame"`` - The end of the draft phase
+     * ``"game"`` - The time when the game clock hits 0
+     * ``"postgame"`` - The time the ancient is destroyed
+     * ``"end"`` - The last tick in the replay
+
+     These values will not be 100% accurate, but should be good +-50 ticks
   """
 
   @property
@@ -66,24 +79,40 @@ class StreamBinding(object):
     """
     return self._stream.string_tables
 
-  def __init__(self, demo, start_tick=5000):
+  def __init__(self, demo, start_tick=None, start_time=None):
     self._demo = demo
-    self.go_to_tick(start_tick)
+
+    # Do this to bootstrap go_to_tick("end")
+    self._state_change_ticks = {
+      "end": self.demo.file_info.playback_ticks - 2,
+    }
+    self.go_to_tick("end")
+
+    self._state_change_ticks = {
+      "start": 0,
+      "draft": self._time_to_tick(self.info.draft_start_time),
+      "pregame": self._time_to_tick(self.info.pregame_start_time),
+      "game": self._time_to_tick(self.info.game_start_time),
+      "postgame": self._time_to_tick(self.info.game_end_time),
+      "end": self.demo.file_info.playback_ticks - 2
+    }
+    if start_tick is not None:
+      self.go_to_tick(start_tick)
+    elif start_time is not None:
+      self.go_to_time(start_time)
+    else:
+      self.go_to_tick("game")
 
   def iter_ticks(self, start=None, end=None, step=1):
     """
     A generator that iterates through the demo's ticks and updates the
     :class:`StreamBinding` to that tick. Yields the current tick.
 
-    The start parameter defines the tick to iterate from, and if not set,
-    the :attr:`StreamBinding.tick` attribute will be used.
+    The start parameter defines the tick to iterate from, and if not set, the
+    current tick will be used instead.
 
     The end parameter defines the point to stop iterating; if not set,
     the iteration will continue until the end of the replay.
-
-    .. note:: The end of the replay includes the post game results screen, so if
-              you want to iterate until the ancient dies, check
-              :attr:`GameInfo.game_state`.
 
     The step parameter is the number of ticks to consume before yielding
     the tick; the default of one means that every tick will be yielded. Do
@@ -93,6 +122,12 @@ class StreamBinding(object):
 
     if start is None:
       start = self.tick
+    elif start in self._state_change_ticks:
+      start = self._state_change_ticks[start]
+
+    if end in self._state_change_ticks:
+      end = self._state_change_ticks[end]
+
     if end is not None:
       assert start < end
 
@@ -116,18 +151,11 @@ class StreamBinding(object):
 
   def go_to_tick(self, tick):
     """
-    Moves too the given tick, or the nearest tick after it. Accepts certain
-    special values of tick:
-
-    * ``"end"`` - Move to the last tick in the replay
-    * ``"start"`` - Move to the first tick in the replay
-
-    Returns the tick moved to.
+    Moves too the given tick, or the nearest tick after it. Returns the tick
+    moved to.
     """
-    if tick == "end":
-      tick = self.demo.file_info.playback_ticks - 2
-    elif tick == "start":
-      tick = 0
+    if tick in self._state_change_ticks:
+      tick = self._state_change_ticks[tick]
 
     if tick > self.demo.file_info.playback_ticks or tick < 0:
       raise IndexError("Tick {} out of range".format(tick))
@@ -137,6 +165,13 @@ class StreamBinding(object):
 
     return self.tick
 
+  def _time_to_tick(self, time):
+    """
+    Converts a time to a tick.
+    """
+    current_time = self.info.game_time
+    return int(self.tick + (time - current_time) * TICKS_PER_SECOND) - 2
+
   def go_to_time(self, time):
     """
     Moves to the tick with the given game time. Could potentially overshoot,
@@ -144,8 +179,7 @@ class StreamBinding(object):
 
     Returns the tick it has moved to.
     """
-    current_time = self.info.game_time
-    target_tick = int(self.tick + (time - current_time) * TICKS_PER_SECOND) - 2
+    target_tick = self._time_to_tick(time)
     for tick in self.iter_ticks(start=target_tick):
       if self.info.game_time > time:
         return tick

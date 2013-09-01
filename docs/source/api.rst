@@ -5,7 +5,7 @@ Stream Binding
 --------------
 
 .. automodule:: tarrasque.binding
-   :members:
+   :members: StreamBinding
 
 Dota Entity
 -----------
