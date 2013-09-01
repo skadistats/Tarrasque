@@ -24,3 +24,12 @@ class StreamBindingMovementTestCase(unittest.TestCase):
     ticks_left = self.replay.demo.file_info.playback_ticks - self.replay.tick
     lt_(abs(ticks_left), 3)
     lt_(-1, ticks_left)
+
+class StreamBindingConstantTestCase(unittest.TestCase):
+  REPLAY_FILE = "./demo/PL.dem"
+
+  def setUp(self):
+    self.replay = tarrasque.StreamBinding.from_file(self.REPLAY_FILE, 20000)
+
+  def test_number_of_players(self):
+    eq_(len(self.replay.players), 10)
