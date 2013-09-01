@@ -151,7 +151,8 @@ class DotaEntity(object):
 
     modifiers = []
     for mhandle in mhandles:
-      modifier = Modifier(mhandle=mhandle, stream_binding=self.stream_binding)
+      modifier = Modifier(parent=self, mhandle=mhandle,
+                          stream_binding=self.stream_binding)
       modifiers.append(modifier)
     return modifiers
 

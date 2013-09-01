@@ -7,7 +7,12 @@ class Modifier(object):
   provided by the fountain is exposed as a Modifier.
   """
 
-  def __init__(self, mhandle, stream_binding):
+  def __init__(self, parent, mhandle, stream_binding):
+    self.parent = parent
+    """
+    The :class:`DotaEntity` that has this modifier.
+    """
+
     self.mhandle = mhandle
     """
     The "mhandle" of the Modifier, used to track it across ticks.
@@ -21,11 +26,15 @@ class Modifier(object):
 
   @property
   def properties(self):
-    return self.stream_binding.modifiers.by_mhandle[self.mhandle][1]
+    modifiers = self.stream_binding.modifiers
+    return modifiers.by_parent[self.parent.ehandle][self.mhandle]
 
-  name = ModifierProperty("name")\
-         .apply(StringTableTrans("ModifierNames"))\
-         .apply(FuncTrans(lambda v: v[0]))
+  @property
+  def exists(self):
+    modifiers = self.stream_binding.modifiers
+    return self.mhandle in modifier.by_parent.get(self.parent.ehandle, {})
+
+  name = ModifierProperty("name")
   """
   The name of the modifier.
   """
@@ -36,8 +45,29 @@ class Modifier(object):
   The caster of the modifier.
   """
 
+  aura = ModifierProperty("aura")
+  """
+  Boolean determining if the modifier is placed by an aura or not.
+  """
+
+  ability_level = ModifierProperty("ability_level")
+  """
+  The level of the ability that caused this modifier.
+  """
+
+  ability = ModifierProperty("ability")\
+            .apply(EntityTrans())
+  """
+  The ability that caused this modifier.
+  """
+
+  created = ModifierProperty("creation_time")
+  """
+  The game time that the modifier was applied.
+  """
+
   def __repr__(self):
     if self.name:
       return "Modifier('{}')".format(self.name)
     else:
-      super(Modifier, self).__repr__()
+      return super(Modifier, self).__repr__()
