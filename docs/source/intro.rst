@@ -17,22 +17,21 @@ with the name of the hero they are playing
    from skadi.engine import world as w
    from skadi.replay import demo as rd
 
-   with io.open("demo.dem", 'r+b') as infile:
-       demo = rd.construct(infile)
-       for tick, string_tables, world in demo.stream(tick=5000):
-           ehandle, player_resource = world.find_by_dt(player_resource_dt)
+   demo = rd.construct("./demo.dem")
+   for tick, string_tables, world in demo.stream(tick=5000):
+       ehandle, player_resource = world.find_by_dt(player_resource_dt)
 
-           for i in range(31):
-               player_name_key = ("DT_DOTA_PlayerResource", "m_iszPlayerNames.%40s" % i)
-               player_name = player_resource[player_name_key]
-               if not player_name:
-                   break
-               hero_ehandle_key = ("DT_DOTA_PlayerResource", "m_hSelectedHero")
-               hero_ehandle = player_resource[hero_ehandle_key]
-               hero_dt = world.recv_tables[world.classes[hero_ehandle]].dt
-               hero_name = hero_dt.replace("DT_DOTA_Unit_Hero_", "").replace("_", " ")
-               print hero_name
-           break
+       for i in range(31):
+           player_name_key = ("DT_DOTA_PlayerResource", "m_iszPlayerNames.%40s" % i)
+           player_name = player_resource[player_name_key]
+           if not player_name:
+               break
+           hero_ehandle_key = ("DT_DOTA_PlayerResource", "m_hSelectedHero")
+           hero_ehandle = player_resource[hero_ehandle_key]
+           hero_dt = world.recv_tables[world.classes[hero_ehandle]].dt
+           hero_name = hero_dt.replace("DT_DOTA_Unit_Hero_", "").replace("_", " ")
+           print hero_name
+       break
 
 Using Tarrasque, this could be written as
 
@@ -40,7 +39,7 @@ Using Tarrasque, this could be written as
 
    import tarrasque
 
-   replay = tarrasque.StreamBinding.from_file("demo.dem", 5000)
+   replay = tarrasque.StreamBinding.from_file("demo.dem")
    for player in replay.players:
        print player.name
        print player.hero.name
