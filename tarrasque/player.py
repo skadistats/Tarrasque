@@ -43,7 +43,7 @@ class Player(DotaEntity):
   """
 
   earned_gold = RemoteProperty("DT_DOTA_PlayerResource")\
-    .used_by(IndexedProperty("DT_DOTA_PlayerResource", "m_iTotalEarnedGold"))
+    .used_by(IndexedProperty("DT_EndScoreAndSpectatorStats", "m_iTotalEarnedGold"))
   """
   The total earned gold by the user. This is not net worth; it should be used to
   calculate gpm and stuff.
