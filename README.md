@@ -1,6 +1,8 @@
 Tarrasque
 =========
 
+[![Build Status](https://travis-ci.org/bluepeppers/Tarrasque.png?branch=master)](https://travis-ci.org/bluepeppers/Tarrasque)
+
 A mapping from entities in Dota 2 replays to Python
 objects. i.e. replays for humans.
 
