@@ -7,8 +7,9 @@ from .utils import *
 class StreamBindingMovementTestCase(unittest.TestCase):
   REPLAY_FILE = "./demo/PL.dem"
 
-  def setUp(self):
-    self.replay = tarrasque.StreamBinding.from_file(self.REPLAY_FILE)
+  @classmethod
+  def setUpClass(cls):
+    cls.replay = tarrasque.StreamBinding.from_file(cls.REPLAY_FILE)
 
   def test_go_to_time(self):
     self.replay.go_to_time(3 * 60 + 50)
