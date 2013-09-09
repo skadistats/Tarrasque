@@ -151,7 +151,7 @@ class StreamBinding(object):
 
   def go_to_tick(self, tick):
     """
-    Moves too the given tick, or the nearest tick after it. Returns the tick
+    Moves to the given tick, or the nearest tick after it. Returns the tick
     moved to.
     """
     if tick in self._state_change_ticks:
