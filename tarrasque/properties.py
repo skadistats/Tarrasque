@@ -105,7 +105,11 @@ class ValueProperty(ExtractorProperty):
 
   def get_value(self, entity):
     props = self.chained.get_value(entity)
+    if props is None:
+      return None
+
     return props[self.key]
+
 
 Property = ValueProperty
 
@@ -130,8 +134,8 @@ class ArrayProperty(ExtractorProperty):
     output = []
     for i in range(self.array_length):
       index_key = "%04d" % i
-      # key = (self.key[0], self.key[1] + "." + index_key)
-      key = (self.key[1], index_key)
+      key = (self.key[0], self.key[1] + "." + index_key)
+      #key = (self.key[1], index_key)
       output.append(props[key])
     return output
 
@@ -149,7 +153,7 @@ class IndexedProperty(ExtractorProperty):
     if index is None:
       return
 
-    return props[(self.key[1], "%04d" % index)]
+    return props[(self.key[0], self.key[1] + "." + "%04d" % index)]
 
 class PositionProperty(ExtractorProperty):
   def __init__(self, property_class, cellbits_class="DT_BaseEntity"):

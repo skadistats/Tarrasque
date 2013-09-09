@@ -13,48 +13,52 @@ class GameInfo(DotaEntity):
   the game, etc etc.
   """
 
-  game_time = Property("DT_DOTAGamerules", "m_fGameTime")
+  game_time = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_fGameTime")
   """
   The time in seconds of the current tick.
   """
 
-  load_time = Property("DT_DOTAGamerules", "m_flGameLoadTime")\
+  load_time = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_flGameLoadTime")\
     .apply(FuncTrans(none_or_nonzero))
   """
   The time that the game_state changed to ``loading``.
   """
 
-  draft_start_time = Property("DT_DOTAGamerules", "m_flHeroPickStateTransitionTime")\
+  draft_start_time = Property("DT_DOTAGamerulesProxy",
+                              "DT_DOTAGamerules.m_flHeroPickStateTransitionTime")\
     .apply(FuncTrans(none_or_nonzero))
   """
   The time that the game_state changed to ``draft``.
   """
 
-  pregame_start_time = Property("DT_DOTAGamerules", "m_flPreGameStartTime")\
+  pregame_start_time = Property("DT_DOTAGamerulesProxy",
+                                "DT_DOTAGamerules.m_flPreGameStartTime")\
     .apply(FuncTrans(none_or_nonzero))
   """
   The time that the game_state changed to ``pregame``.
   """
 
-  game_start_time = Property("DT_DOTAGamerules", "m_flGameStartTime")\
+  game_start_time = Property("DT_DOTAGamerulesProxy",
+                             "DT_DOTAGamerules.m_flGameStartTime")\
     .apply(FuncTrans(none_or_nonzero))
   """
   The time that the game_state changed to ``game``.
   """
 
-  game_end_time = Property("DT_DOTAGamerules", "m_flGameEndTime")\
+  game_end_time = Property("DT_DOTAGamerulesProxy",
+                           "DT_DOTAGamerules.m_flGameEndTime")\
     .apply(FuncTrans(none_or_nonzero))
   """
   The time that the game_state changed to ``postgame``.
   """
 
-  match_id = Property("DT_DOTAGamerules", "m_unMatchID")
+  match_id = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_unMatchID")
   """
   The unique match id, used by the Steam API and stuff (i.e. DotaBUff and
   friends).
   """
 
-  game_state = Property("DT_DOTAGamerules", "m_nGameState")\
+  game_state = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_nGameState")\
     .apply(MapTrans(GAME_STATE_VALUES))
   """
   The state of the game. Potential values are:
@@ -67,7 +71,7 @@ class GameInfo(DotaEntity):
     ancient being destroyed
   """
 
-  game_mode = Property("DT_DOTAGamerules", "m_iGameMode")\
+  game_mode = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_iGameMode")\
     .apply(MapTrans(GAME_MODE_VALUES))
   """
   The mode of the dota game. Possible values are:
@@ -80,25 +84,26 @@ class GameInfo(DotaEntity):
   * ``"reverse captain's mode"``
   """
 
-  starting_team = Property("DT_DOTAGamerules", "m_iStartingTeam")\
+  starting_team = Property("DT_DOTAGamerulesProxy",
+                           "DT_DOTAGamerules.m_iStartingTeam")\
     .apply(MapTrans(TEAM_VALUES))
   """
   The team that begins the draft.
   """
 
-  pausing_team = Property("DT_DOTAGamerules", "m_iPauseTeam")\
-    .apply(MapTrans(TEAM_VALUES))
+  pausing_team = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_iPauseTeam")
+#    .apply(MapTrans(TEAM_VALUES))
   """
   The team that is currently pausing.
   """
 
-  active_team = Property("DT_DOTAGamerules", "m_iActiveTeam")\
+  active_team = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_iActiveTeam")\
     .apply(MapTrans(TEAM_VALUES))
   """
   The team that is currently banning/picking.
   """
 
-  pick_state = Property("DT_DOTAGamerules", "m_iHeroPickState")\
+  pick_state = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_iHeroPickState")\
     .apply(MapTrans(PICK_VALUES))
   """
   The current pick/ban that is happening. ``None`` if no pick or ban is
@@ -118,7 +123,7 @@ class GameInfo(DotaEntity):
   ``("pick", 2)``.
   """
 
-  game_winner = Property("DT_DOTAGamerules", "m_iHeroPickState")\
+  game_winner = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_iHeroPickState")\
     .apply(MapTrans(WINNER_VALUES))
   """
   The winner of the game.
