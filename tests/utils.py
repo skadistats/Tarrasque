@@ -1,6 +1,10 @@
 def eq_(val1, val2, message=None):
-  if val1 == val2:
-    return
+  if type(val1) == type(val2) == float:
+    if abs(val1 - val2) < 0.001:
+      return
+  else:
+    if val1 == val2:
+      return
 
   if message is None:
     message = "{} != {}".format(val1, val2)

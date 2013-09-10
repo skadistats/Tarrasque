@@ -19,7 +19,6 @@ class HeroTestCase(unittest.TestCase):
     for hero in self.heroes:
       neq_(hero.name, None)
 
-
   def test_heroes_xp(self):
     for hero in self.heroes:
       gt_(hero.xp, 0)
