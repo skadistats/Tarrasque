@@ -122,4 +122,7 @@ class Hero(BaseNPC):
     """
     The player that is playing the hero.
     """
-    return self.stream_binding.players[self._player_id]
+    for player in self.stream_binding.players:
+      if player.index == self._player_id:
+        return player
+    return None
