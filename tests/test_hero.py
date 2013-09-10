@@ -71,3 +71,42 @@ class HeroTestCase(unittest.TestCase):
     for player in self.replay.players:
       eq_(player.hero.player.name, player.name)
       eq_(player.hero.player, player)
+
+  def test_name(self):
+    eq_(self.hero.name, "Slark")
+
+  def test_xp(self):
+    eq_(self.hero.xp, 206)
+
+  def test_respawn_time(self):
+    eq_(self.hero.respawn_time, 0.0)
+
+  def test_ability_points(self):
+    eq_(self.hero.ability_points, 0)
+
+  def test_natural_strength(self):
+    eq_(self.hero.natural_strength, 22.7999992371)
+
+  def test_natural_agility(self):
+    eq_(self.hero.natural_agility, 22.5)
+
+  def test_natural_intelligence(self):
+    eq_(self.hero.natural_intelligence, 17.8999996185)
+
+  def test_strength(self):
+    eq_(self.hero.strength, 25.7999992371)
+
+  def test_agility(self):
+    eq_(self.hero.agility, 25.5)
+
+  def test_intelligence(self):
+    eq_(self.hero.intelligence, 20.8999996185)
+
+  def test_recent_damage(self):
+    eq_(self.hero.recent_damage, 0)
+
+  def test_spawned_at(self):
+    eq_(self.hero.spawned_at, 181.876556396)
+
+  def test_replicating_hero(self):
+    eq_(self.hero.replicating_hero, None)
