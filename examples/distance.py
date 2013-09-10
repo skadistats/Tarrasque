@@ -15,9 +15,9 @@ tick_data = []
 
 # Step 300 ticks (10 secs) at a time in an effort to speed things up
 for tick in replay.iter_ticks(start=10000, step=300):
-  # The rules object contains the game state, among other things. It
+  # The info object contains the game state, among other things. It
   # goes from "loading" -> "draft" -> "pregame" -> "game" -> "postgame"
-  if replay.rules.game_state == "postgame":
+  if replay.info.game_state == "postgame":
     break
 
   total_distance = 0
