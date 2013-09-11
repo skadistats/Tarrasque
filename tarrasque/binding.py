@@ -33,14 +33,19 @@ class StreamBinding(object):
     """
     The user messages for the current tick.
     """
-    return self._snapshot.user_messages
+    return self._user_messages
 
   @property
   def game_events(self):
     """
     The game events in the current tick.
     """
-    return self._snapshot.game_events
+    from .gameevents import GameEvent
+
+    events = []
+    for data in self._game_events:
+      events.append(GameEvent(stream_binding=self, data=data))
+    return events
 
   # Just another layer of indirection
   # These are properties for autodoc reasons mostly
@@ -79,8 +84,17 @@ class StreamBinding(object):
     """
     return self._stream.string_tables
 
+  @property
+  def prologue(self):
+    """
+    The prologue of the replay.
+    """
+    return self._stream.prologue
+
   def __init__(self, demo, start_tick=None, start_time=None):
     self._demo = demo
+    self._user_messages = []
+    self._game_events = []
 
     # Do this to bootstrap go_to_tick("end")
     self._state_change_ticks = {
@@ -134,6 +148,9 @@ class StreamBinding(object):
     if start > self.demo.file_info.playback_ticks or start < 0:
       raise IndexError("Tick {} out of range".format(tick))
 
+    self._user_messages = []
+    self._game_events = []
+
     last_tick = start - step - 1
     self._stream = self.demo.stream(tick=start)
     for snapshot in self._stream:
@@ -142,12 +159,18 @@ class StreamBinding(object):
       if end is not None and self.tick >= end:
         break
 
+      self._user_messages.extend(self._snapshot.user_messages)
+      self._game_events.extend(self._snapshot.game_events)
+
       if self.tick - last_tick < step:
         continue
       else:
         last_tick = self.tick
 
       yield self.tick
+
+      self._user_messages = []
+      self._game_events = []
 
   def go_to_tick(self, tick):
     """
@@ -162,6 +185,8 @@ class StreamBinding(object):
 
     self._stream = self.demo.stream(tick=tick)
     self._snapshot = Snapshot(*next(iter(self._stream)))
+    self._user_messages = self._snapshot.user_messages[:]
+    self._game_events = self._snapshot.game_events[:]
 
     return self.tick
 
