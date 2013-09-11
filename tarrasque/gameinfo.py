@@ -76,12 +76,21 @@ class GameInfo(DotaEntity):
   """
   The mode of the dota game. Possible values are:
 
-  * ``"all-pick"``
+  * ``"none"``
+  * ``"all pick"``
   * ``"captain's mode"``
   * ``"random draft"``
   * ``"single draft"``
   * ``"all random"``
+  * ``"intro"``
+  * ``"diretide"``
   * ``"reverse captain's mode"``
+  * ``"greeviling"``
+  * ``"tutorial"``
+  * ``"mid only"``
+  * ``"least played"``
+  * ``"new player pool"``
+  * ``"compendium matchmaking"``
   """
 
   starting_team = Property("DT_DOTAGamerulesProxy",
@@ -110,7 +119,7 @@ class GameInfo(DotaEntity):
   happening. If the :attr:`game_mode` is not ``"captain's mode"``, the
   possible values are:
 
-  * ``"all-pick"``
+  * ``"all pick"``
   * ``"single draft"``
   * ``"random draft"``
   * ``"all random"``
