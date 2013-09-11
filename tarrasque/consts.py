@@ -32,19 +32,28 @@ GAME_STATE_VALUES = {
 }
 
 GAME_MODE_VALUES = {
-    1: "all-pick",
+    0: "none",
+    1: "all pick",
     2: "captain's mode",
     3: "random draft",
     4: "single draft",
     5: "all random",
-    8: "reverse captain's mode"
+    6: "intro",
+    7: "diretide",
+    8: "reverse captain's mode",
+    9: "greeviling",
+    10: "tutorial",
+    11: "mid only",
+    12: "least played",
+    13: "new player pool",
+    14: "compendium matchmaking"
 }
 
 def generate_pick_values():
     b = "ban"
     p = "pick"
     return {
-        1: "all-pick",
+        1: "all pick",
         2: "single draft",
         4: "random draft",
         27: "all random",
