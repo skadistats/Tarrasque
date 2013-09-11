@@ -6,6 +6,7 @@ from .player import *
 from .hero import *
 from .gameinfo import *
 from .ability import *
+from .gameevents import *
 
 __version__ = "0.1"
 __author__ = "Laurie Clark-Michalek"
