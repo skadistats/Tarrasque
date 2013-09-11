@@ -40,11 +40,11 @@ class StreamBinding(object):
     """
     The game events in the current tick.
     """
-    from .gameevents import GameEvent
+    from .gameevents import create_game_event
 
     events = []
     for data in self._game_events:
-      events.append(GameEvent(stream_binding=self, data=data))
+      events.append(create_game_event(stream_binding=self, data=data))
     return events
 
   # Just another layer of indirection

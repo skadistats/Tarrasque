@@ -1,44 +1,76 @@
 import functools
+import re
 
 from skadi.engine import game_event
 
 from .properties import *
 
-def requires_humanize(func):
-  @functools.wraps(func)
-  def inner(self, *args, **kwargs):
-    if not self._humanize:
-      event_list = self.stream_binding.prologue.game_event_list
-      self._humanize = game_event.humanize(self._data, event_list)
+global EVENT_CLASSES
+EVENT_CLASSES = {}
+global EVENT_WILDCARDS
+EVENT_WILDCARDS = []
 
-    return func(self, *args, **kwargs)
+def register_event(event_name):
+  """
+  Register a class as the handler for a given event.
+  """
+  def inner(event_class):
+    EVENT_CLASSES[event_name] = event_class
+    return event_class
   return inner
+
+def register_event_wildcard(event_pattern):
+  """
+  Same as :func:`register_event` but uses a regex pattern to match, instead of
+  a static game event name.
+  """
+  def inner(event_class):
+    EVENT_WILDCARD.append((re.compile(event_wildcard), event_class))
+    return event_class
+  return inner
+
+def find_game_event_class(event_name):
+  """
+  Given the name of an event, finds the class that should be used to represent
+  it.
+  """
+  if event_name in EVENT_CLASSES:
+    return EVENT_CLASSES[event_name]
+
+  for regexp, cls in EVENT_WILDCARDS:
+    if regexp.match(event_name):
+      return cls
+
+  return GameEvent
+
+def create_game_event(stream_binding, data):
+  """
+  Creates a new GameEvent object from a stream binding and the un-humanized game
+  event data.
+  """
+  event_list = stream_binding.prologue.game_event_list
+  name, properties = game_event.humanize(data, event_list)
+
+  cls = find_game_event_class(name)
+
+  return cls(stream_binding=stream_binding, name=name, properties=properties)
 
 class GameEvent(object):
   """
   Base class for all game events. Handles humanise and related things.
   """
 
-  def __init__(self, stream_binding, data):
+  def __init__(self, stream_binding, name, properties):
     # Note that game events can't really be tracked across ticks, so
     # we just pass the data
 
-    self._class_index, self._attrs = self._data = data
-
-    self.stream_binding = stream_binding
-
-    # The output of humanize(self._data, game_event_list)
-    self._humanize = None
-
-  @property
-  @requires_humanize
-  def properties(self):
-    return self._humanize[1]
-
-  @property
-  @requires_humanize
-  def name(self):
+    self.name = name
     """
     The name of the GameEvent. i.e. ``"dota_combatlog"``, ``"dota_chase_hero"``.
     """
-    return self._humanize[0]
+    self.properties = properties
+
+    self.stream_binding = stream_binding
+
+  def __repr__(self):
+    return "{}({})".format(self.name, self.properties)
