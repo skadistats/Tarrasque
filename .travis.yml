@@ -1,11 +1,15 @@
 language: python
 python:
   - "2.7"
+env:
+  - SKADI=basic
+  - SKADI=cython
 install:
   - sudo apt-get install libsnappy1 libsnappy-dev libprotobuf7 libprotoc7 protobuf-compiler
-  - pip install bitstring==3.1.2 python-snappy==0.5 protobuf==2.5
+  - pip install bitstream==3.1.2 python-snappy==0.5 protobuf==2.5 cython==0.19.1
   - git clone https://github.com/skadistats/skadi.git
   - pushd skadi
-  - python setup.py install
+  - sh -c "if [ $SKADI == 'basic' ]; then python setup-basic.py install; fi"
+  - sh -c "if [ $SKADI == 'cython' ]; then python setup-basic.py install; fi"
   - popd
 script: nosetests
