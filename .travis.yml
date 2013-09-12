@@ -9,7 +9,7 @@ install:
   - pip install bitstring==3.1.2 python-snappy==0.5 protobuf==2.5 cython==0.19.1
   - git clone https://github.com/skadistats/skadi.git
   - pushd skadi
-  - bash -c "if [[ $SKADI == 'basic' ]]; then python setup-basic.py install; fi"
+  - bash -c "if [[ $SKADI == 'basic' ]]; then python setup_basic.py install; fi"
   - bash -c "if [[ $SKADI == 'cython' ]]; then python setup.py install; fi"
   - popd
 script: nosetests
