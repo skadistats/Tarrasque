@@ -247,8 +247,9 @@ class EntityTrans(TransformerProperty):
     return entity.create_default_class(dt, world)
 
 class StringTableTrans(TransformerProperty):
-  def __init__(self, table_key):
+  def __init__(self, table_key, index_var="by_index"):
     self.key = table_key
+    self.index_var = index_var
 
   def get_value(self, entity):
     val = self.chained.get_value(entity)
@@ -256,4 +257,9 @@ class StringTableTrans(TransformerProperty):
       return
 
     table = entity.stream_binding.string_tables[self.key]
-    return table.by_index.get(val, None)
+    if self.index_var == "by_index":
+      return table.by_index.get(val, None)
+    elif self.index_var == "by_name":
+      return table.by_name.get(val, None)
+    else:
+      raise KeyError("Unknown index variable: {}".format(s))

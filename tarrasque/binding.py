@@ -95,6 +95,10 @@ class StreamBinding(object):
     self._demo = demo
     self._user_messages = []
     self._game_events = []
+    self._state_change_ticks = {}
+
+    self.go_to_tick(0)
+    self._initial_time = self.info.game_time
 
     # Do this to bootstrap go_to_tick("end")
     self._state_change_ticks = {
@@ -194,8 +198,7 @@ class StreamBinding(object):
     """
     Converts a time to a tick.
     """
-    current_time = self.info.game_time
-    return int(self.tick + (time - current_time) * TICKS_PER_SECOND) - 2
+    return int(TICKS_PER_SECOND * (time - self._initial_time)) - 2
 
   def go_to_time(self, time):
     """

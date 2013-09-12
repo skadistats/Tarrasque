@@ -9,3 +9,7 @@ class CombatLogMessage(gameevents.GameEvent):
   """
 
   type = Property("type").apply(MapTrans(COMBAT_LOG_TYPES))
+
+  target_name = Property("targetname")\
+    .apply(StringTableTrans("CombatLogNames"))\
+    .apply(FuncTrans(lambda n: n[0]))

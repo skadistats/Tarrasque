@@ -26,6 +26,7 @@ LIFE_STATE_VALUES = {
 GAME_STATE_VALUES = {
   1: "loading",
   2: "draft",
+  3: "unknown",
   4: "pregame",
   5: "game",
   6: "postgame"
