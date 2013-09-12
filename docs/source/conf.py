@@ -66,6 +66,16 @@ MOCKED_MODULES = [
   "skadi.index.embed.send_tables",
   "skadi.index.embed.packet",
   "skadi.demo"
+  "skadi.io.unpacker",
+  "skadi.io.protobuf",
+  "skadi.io",
+  "skadi.engine",
+  "skadi.engine.dt",
+  "skadi",
+  "skadi.protoc",
+  "skadi.index.demo",
+  "skadi.index.embed",
+  "skadi.index",
   ]
 
 for module_name in MOCKED_MODULES:
