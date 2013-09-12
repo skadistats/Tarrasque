@@ -84,50 +84,50 @@ class PlayerTestCase(unittest.TestCase):
   def test_have_name(self):
     eq_(self.player.name, "Gyozmo")
 
-  def test_player_have_hero(self):
+  def test_have_hero(self):
     neq_(self.player.hero, None)
 
-  def test_players_reliable_gold(self):
+  def test_reliable_gold(self):
     eq_(self.player.reliable_gold, 0)
 
-  def test_players_unreliable_gold(self):
+  def test_unreliable_gold(self):
     eq_(self.player.unreliable_gold, 154)
 
-  def test_players_earned_gold(self):
+  def test_earned_gold(self):
     eq_(self.player.earned_gold, 150)
 
-  def test_players_steam_id(self):
+  def test_steam_id(self):
     eq_(self.player.steam_id, 2865091096608769)
 
-  def test_players_team(self):
+  def test_team(self):
     eq_(self.player.team, "radiant")
 
-  def test_players_last_hits(self):
+  def test_last_hits(self):
     eq_(self.player.last_hits, 1)
 
-  def test_players_denies(self):
+  def test_denies(self):
     eq_(self.player.denies, 0)
 
-  def test_players_kills(self):
+  def test_kills(self):
     eq_(self.player.kills, 0)
 
-  def test_players_deaths(self):
+  def test_deaths(self):
     eq_(self.player.deaths, 0)
 
-  def test_players_assists(self):
+  def test_assists(self):
     eq_(self.player.assists, 0)
 
-  def test_players_streak(self):
+  def test_streak(self):
     eq_(self.player.streak, 0)
 
-  def test_players_buyback_cooldown_time(self):
+  def test_buyback_cooldown_time(self):
     eq_(self.player.buyback_cooldown_time, 0.0)
 
-  def test_players_last_buyback_time(self):
+  def test_last_buyback_time(self):
     eq_(self.player.last_buyback_time, 0)
 
-  def test_players_has_buyback(self):
+  def test_has_buyback(self):
     eq_(self.player.has_buyback, True)
 
-  def test_players_total_gold(self):
+  def test_total_gold(self):
     eq_(self.player.total_gold, 154)
