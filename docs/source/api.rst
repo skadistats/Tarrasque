@@ -53,5 +53,5 @@ from the :class:`Hero` and have different values for :attr:`~Hero.dt_key` and
 Game Events
 -----------
 
-.. automodule:: tarrasque.gameevents
-   :members
+.. automodule:: tarrasque.hero
+   :members:
