@@ -36,7 +36,40 @@ class Mock(object):
         else:
             return Mock()
 
-sys.modules["skadi"] = Mock()
+# TODO: fuck this shit
+MOCKED_MODULES = [
+  "skadi.io.unpacker.prop",
+  "skadi.io.unpacker.entity",
+  "skadi.io.unpacker.string_table",
+  "skadi.io.protobuf.packet",
+  "skadi.io.protobuf.demo",
+  "skadi.io.bitstream",
+  "skadi.engine.string_table",
+  "skadi.engine.game_event",
+  "skadi.engine.user_message",
+  "skadi.engine.world",
+  "skadi.engine.dt.prop",
+  "skadi.engine.dt.recv",
+  "skadi.engine.dt.consts",
+  "skadi.engine.dt.send",
+  "skadi.engine.modifiers",
+  "skadi.protoc.demo_pb2",
+  "skadi.protoc.ai_activity_pb2",
+  "skadi.protoc.dota_usermessages_pb2",
+  "skadi.protoc.networkbasetypes_pb2",
+  "skadi.protoc.dota_commonmessages_pb2",
+  "skadi.protoc.dota_modifiers_pb2",
+  "skadi.protoc.netmessages_pb2",
+  "skadi.protoc.usermessages_pb2",
+  "skadi.index.demo.epilogue",
+  "skadi.index.demo.prologue",
+  "skadi.index.embed.send_tables",
+  "skadi.index.embed.packet",
+  "skadi.demo"
+  ]
+
+for module_name in MOCKED_MODULES:
+  sys.modules[module_name] = Mock()
 
 # -- General configuration -----------------------------------------------------
 
