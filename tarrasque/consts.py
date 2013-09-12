@@ -83,3 +83,11 @@ def generate_pick_values():
     }
 
 PICK_VALUES = generate_pick_values()
+
+COMBAT_LOG_TYPES = {
+    0: "damage",
+    1: "heal",
+    2: "modifier added",
+    3: "modifier removed",
+    4: "death"
+}

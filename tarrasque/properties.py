@@ -100,8 +100,11 @@ class ExtractorProperty(BaseProperty):
     return chained
 
 class ValueProperty(ExtractorProperty):
-  def __init__(self, dt_class, dt_prop):
-    self.key = (dt_class, dt_prop)
+  def __init__(self, dt_class, dt_prop=None):
+    if not dt_prop:
+      self.key = dt_class
+    else:
+      self.key = (dt_class, dt_prop)
 
   def get_value(self, entity):
     props = self.chained.get_value(entity)
