@@ -1,11 +1,5 @@
 import collections
 
-Snapshot = collections.namedtuple("Snapshot",
-                                  "tick, user_messages, game_events, world,"
-                                  " modifiers")
-
-TICKS_PER_SECOND = 30
-
 class StreamBinding(object):
   """
   The StreamBinding class is Tarrasque's metaphor for the replay. Every
@@ -54,14 +48,14 @@ class StreamBinding(object):
     """
     The Skadi wold object for the current tick.
     """
-    return self._snapshot.world
+    return self._stream.world
 
   @property
   def tick(self):
     """
     The current tick.
     """
-    return self._snapshot.tick
+    return self._stream.tick
 
   @property
   def demo(self):
@@ -75,7 +69,7 @@ class StreamBinding(object):
     """
     The Skadi modifiers object for the tick.
     """
-    return self._snapshot.modifiers
+    return self._stream.modifiers
 
   @property
   def string_tables(self):
@@ -95,31 +89,30 @@ class StreamBinding(object):
     self._demo = demo
     self._user_messages = []
     self._game_events = []
-    self._state_change_ticks = {}
-
-    self.go_to_tick(0)
-    self._initial_time = self.info.game_time
-
-    # Do this to bootstrap go_to_tick("end")
-    self._state_change_ticks = {
-      "end": self.demo.file_info.playback_ticks - 2,
-    }
-    self.go_to_tick("end")
 
     self._state_change_ticks = {
       "start": 0,
-      "draft": self._time_to_tick(self.info.draft_start_time),
-      "pregame": self._time_to_tick(self.info.pregame_start_time),
-      "game": self._time_to_tick(self.info.game_start_time),
-      "postgame": self._time_to_tick(self.info.game_end_time),
       "end": self.demo.file_info.playback_ticks - 2
     }
-    if start_tick is not None:
+
+    self.go_to_tick(self.demo.file_info.playback_ticks - 2)
+
+    self._state_change_times = {
+      "draft": self.info.draft_start_time,
+      "pregame": self.info.pregame_start_time,
+      "game": self.info.game_start_time,
+      "postgame": self.info.game_end_time
+    }
+
+    # We're already here!
+    if start_tick == "end":
+      pass
+    elif start_tick is not None:
       self.go_to_tick(start_tick)
     elif start_time is not None:
       self.go_to_time(start_time)
     else:
-      self.go_to_tick("game")
+      self.go_to_state_change("game")
 
   def iter_ticks(self, start=None, end=None, step=1):
     """
@@ -137,34 +130,22 @@ class StreamBinding(object):
     not assume that the step is precise; the gap between two ticks will
     always be larger than the step, but usually not equal to it.
     """
-
-    if start is None:
-      start = self.tick
-    elif start in self._state_change_ticks:
-      start = self._state_change_ticks[start]
-
-    if end in self._state_change_ticks:
-      end = self._state_change_ticks[end]
-
-    if end is not None:
-      assert start < end
-
-    if start > self.demo.file_info.playback_ticks or start < 0:
-      raise IndexError("Tick {} out of range".format(tick))
+    if start is not None:
+      self.go_to_tick(start)
 
     self._user_messages = []
     self._game_events = []
 
     last_tick = start - step - 1
-    self._stream = self.demo.stream(tick=start)
-    for snapshot in self._stream:
-      self._snapshot = Snapshot(*snapshot)
-
-      if end is not None and self.tick >= end:
+    for _ in self._stream:
+      if isinstance(end, str):
+        if self.info.game_state == end:
+          break
+      elif self.tick >= end:
         break
 
-      self._user_messages.extend(self._snapshot.user_messages)
-      self._game_events.extend(self._snapshot.game_events)
+      self._user_messages.extend(self._stream.user_messages)
+      self._game_events.extend(self._stream.game_events)
 
       if self.tick - last_tick < step:
         continue
@@ -181,24 +162,17 @@ class StreamBinding(object):
     Moves to the given tick, or the nearest tick after it. Returns the tick
     moved to.
     """
-    if tick in self._state_change_ticks:
-      tick = self._state_change_ticks[tick]
+    if isinstance(tick, str):
+      return self.go_to_state_change(tick)
 
     if tick > self.demo.file_info.playback_ticks or tick < 0:
       raise IndexError("Tick {} out of range".format(tick))
 
     self._stream = self.demo.stream(tick=tick)
-    self._snapshot = Snapshot(*next(iter(self._stream)))
-    self._user_messages = self._snapshot.user_messages[:]
-    self._game_events = self._snapshot.game_events[:]
+    self._user_messages = (self._stream.user_messages or [])[:]
+    self._game_events = (self._stream.game_events or [])[:]
 
     return self.tick
-
-  def _time_to_tick(self, time):
-    """
-    Converts a time to a tick.
-    """
-    return int(TICKS_PER_SECOND * (time - self._initial_time)) - 2
 
   def go_to_time(self, time):
     """
@@ -207,10 +181,48 @@ class StreamBinding(object):
 
     Returns the tick it has moved to.
     """
-    target_tick = self._time_to_tick(time)
-    for tick in self.iter_ticks(start=target_tick):
+    # Go for 31 tps as would rather exit FP loop earlier than
+    # sooner. 1.5 for same reason
+    FP_REGION = 1800 * 1.5 / 31
+
+    # If the time we're going to is behind us, recreate the stream
+    if time < self.info.game_time:
+      self._stream = self.demo.stream(tick=0)
+
+    # If the time is more than 1.5 full packets ahead of us, iter full ticks
+    if time > self.info.game_time + FP_REGION:
+      for _ in self._stream.iterfullticks():
+        # If this full tick is within 1.5 full packets of the target, stop
+        if self.info.game_time + FP_REGION > time and\
+           self.info.game_time < time:
+          break
+      else:
+        # If we didn't stop via break, then it was EOF, so raise
+        raise IndexError("Time {} out of range".format(time))
+
+    for _ in self._stream:
       if self.info.game_time > time:
-        return tick
+        break
+    else:
+      raise IndexError("Time {} out of range".format(time))
+
+    return self.tick
+
+  def go_to_state_change(self, state):
+    """
+    Moves to the time when the :attr:`GameInfo.game_state` changed to the given
+    state. Valid values are equal to the possible values of
+    :att:`~GameInfo.game_state`, along with ``"start"`` and ``"end"`` which
+    signify the first and last tick in the replay, respectively.
+
+    Returns the tick moved to.
+    """
+    if state in self._state_change_ticks:
+      return self.go_to_tick(self._state_change_ticks[state])
+    elif state in self._state_change_times:
+      return self.go_to_time(self._state_change_times[state])
+    else:
+      raise ValueError("Unsupported state {}".format(repr(state)))
 
   def __iter__(self):
     return self.iter_ticks()
