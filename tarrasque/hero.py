@@ -89,10 +89,10 @@ class Hero(BaseNPC):
 
   recent_damage = Property("DT_DOTA_BaseNPC_Hero", "m_iRecentDamage")
   """
-  Recent damage taken? Would make sense for figuring out when to cancel
-  tranquils and stuff.
+  The damage taken by the hero recently. The exact time period that classifies
+  as "recently" is around 2/3 seconds.
 
-  TODO: figure out exactly what this is
+  TODO: Find exact value
   """
 
   spawned_at = Property("DT_DOTA_BaseNPC_Hero", "m_flSpawnedAt")
