@@ -206,6 +206,8 @@ class StreamBinding(object):
     else:
       raise IndexError("Time {} out of range".format(time))
 
+    self._user_messages = self._stream.user_messages[:]
+    self._game_events = self._stream.game_events[:]
     return self.tick
 
   def go_to_state_change(self, state):
