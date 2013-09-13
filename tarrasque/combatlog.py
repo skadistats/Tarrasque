@@ -43,7 +43,7 @@ class CombatLogMessage(gameevents.GameEvent):
   The name of the attacker in the event.
   """
 
-  value = Property("sourcename")\
+  value = Property("sourcename")
   """
   The value of the event. Can have various different meanings depending on the
   :attr:`type`.
