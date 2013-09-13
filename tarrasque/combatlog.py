@@ -28,3 +28,23 @@ class CombatLogMessage(gameevents.GameEvent):
   a message where Shadow Field is being attacked, this would be
   ``"dt_dota_nevermore"``.
   """
+
+  source_name = Property("sourcename")\
+    .apply(StringTableTrans("CombatLogNames"))\
+    .apply(FuncTrans(lambda n: n[0]))
+  """
+  The name of the source of the event.
+  """
+
+  attacker_name = Property("sourcename")\
+    .apply(StringTableTrans("CombatLogNames"))\
+    .apply(FuncTrans(lambda n: n[0]))
+  """
+  The name of the attacker in the event.
+  """
+
+  value = Property("sourcename")\
+  """
+  The value of the event. Can have various different meanings depending on the
+  :attr:`type`.
+  """
