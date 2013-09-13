@@ -55,3 +55,9 @@ Game Events
 
 .. automodule:: tarrasque.gameevents
    :members:
+
+Combat Log
+----------
+
+.. automodule:: tarrasque.combatlog
+   :members:
