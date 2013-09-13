@@ -76,8 +76,16 @@ class DotaEntity(object):
   name = Property("DT_BaseEntity", "m_iName")\
     .apply(FuncTrans(lambda n: n if n else None))
   """
-  The name of the entity. Not guaranteed to be set for all entities, in
-  which case it should be overridden.
+  The name of an entity. This will either be equal to the
+  :attr:`DotaEntity.raw_name` or be overridden to be a name an end user might
+  be more familiar with. For example, if :attr:`~DotaEntity.raw_name` is
+  ``"dt_dota_nevermore"``, this value might be set to ``"Nevermore"`` or
+  ``"Shadow Field"``.
+  """
+
+  raw_name = name
+  """
+  The raw name of the entity. Not very useful on its own.
   """
 
   owner = Property("DT_BaseEntity", "m_hOwnerEntity")\
