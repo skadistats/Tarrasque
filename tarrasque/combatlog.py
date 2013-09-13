@@ -9,6 +9,15 @@ class CombatLogMessage(gameevents.GameEvent):
   """
 
   type = Property("type").apply(MapTrans(COMBAT_LOG_TYPES))
+  """
+  The type of event this message signifies. Options are:
+
+  * ``"damage"`` - One entity is damaging another
+  * ``"heal"`` - One entity is healing another
+  * ``"modifier added"`` - A modifier is being added to an entity
+  * ``"modifier removed"`` - A modifier is being removed from an entity
+  * ``"death"`` - An entity has died.
+  """
 
   target_name = Property("targetname")\
     .apply(StringTableTrans("CombatLogNames"))\
