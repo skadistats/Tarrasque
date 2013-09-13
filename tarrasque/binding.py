@@ -136,7 +136,7 @@ class StreamBinding(object):
     self._user_messages = []
     self._game_events = []
 
-    last_tick = start - step - 1
+    last_tick = self.tick - step - 1
     for _ in self._stream:
       if isinstance(end, str):
         if self.info.game_state == end:
