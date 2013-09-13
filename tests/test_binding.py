@@ -26,6 +26,18 @@ class StreamBindingMovementTestCase(unittest.TestCase):
     lt_(abs(ticks_left), 3)
     lt_(-1, ticks_left)
 
+  def test_go_to_state_change(self):
+    states = ["pregame", "game", "postgame"]
+
+    for state_name in states:
+      self.replay.go_to_tick(state_name)
+      change_tick = self.replay.tick
+      eq_(self.replay.info.game_state, state_name)
+      while self.replay.tick == change_tick:
+        self.replay.go_to_tick(self.replay.tick - 10)
+
+      neq_(self.replay.info.game_state, state_name)
+
 class StreamBindingConstantTestCase(unittest.TestCase):
   REPLAY_FILE = "./demo/PL.dem"
 
