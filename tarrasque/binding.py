@@ -133,6 +133,9 @@ class StreamBinding(object):
     if start is not None:
       self.go_to_tick(start)
 
+    if end is None:
+      end = self._state_change_ticks["end"]
+
     self._user_messages = []
     self._game_events = []
 
