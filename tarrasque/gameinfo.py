@@ -69,6 +69,9 @@ class GameInfo(DotaEntity):
     spawned
   * ``"game"`` - The main game, between the first creep spawn and the
     ancient being destroyed
+
+  ``"unknown"`` is also a value that may be occasionally returned, but I've no
+  idea what it signifies. If you find out, let us know on #dota2replay
   """
 
   game_mode = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_iGameMode")\
