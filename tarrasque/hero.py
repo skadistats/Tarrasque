@@ -53,8 +53,6 @@ class Hero(BaseNPC):
   ability_points = Property("DT_DOTA_BaseNPC_Hero", "m_iAbilityPoints")
   """
   Seems to be the number of ability points the player can assign.
-
-  TODO: Check this on IRC
   """
 
   natural_strength = Property("DT_DOTA_BaseNPC_Hero", "m_flStrength")
