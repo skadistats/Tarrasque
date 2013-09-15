@@ -106,7 +106,8 @@ class GameInfo(DotaEntity):
   pausing_team = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_iPauseTeam")\
     .apply(MapTrans(TEAM_VALUES))
   """
-  The team that is currently pausing.
+  The team that is currently pausing. Will be ``None`` if the game is not
+  paused, otherwise either ``"radiant"`` or ``"dire"``.
   """
 
   active_team = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_iActiveTeam")\
