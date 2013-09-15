@@ -7,6 +7,7 @@ TEAM_VALUES = {
   3: "dire",
   5: "spectator",
   0: None,
+  1: None,
 }
 
 WINNER_VALUES = {
