@@ -103,8 +103,8 @@ class GameInfo(DotaEntity):
   The team that begins the draft.
   """
 
-  pausing_team = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_iPauseTeam")
-#    .apply(MapTrans(TEAM_VALUES))
+  pausing_team = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_iPauseTeam")\
+    .apply(MapTrans(TEAM_VALUES))
   """
   The team that is currently pausing.
   """
