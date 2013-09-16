@@ -48,3 +48,21 @@ class CombatLogMessage(gameevents.GameEvent):
   The value of the event. Can have various different meanings depending on the
   :attr:`type`.
   """
+
+  inflictorname = Property("inflictorname")\
+    .apply(StringTableTrans("CombatLogNames"))\
+    .apply(FuncTrans(lambda n: n[0]))
+  """
+  The name of the "inflictor" (wtf is that?).  Used to id modifiers.
+  """
+
+  health = Property("health")
+  """
+  The health of the unit being attacked, for 'heal' and 'damage' events.
+  """
+
+
+  timestamp = Property("timestamp")
+  """
+  The timestamp this combat log message corresponds to.
+  """
