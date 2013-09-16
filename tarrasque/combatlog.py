@@ -36,14 +36,14 @@ class CombatLogMessage(gameevents.GameEvent):
   The name of the source of the event.
   """
 
-  attacker_name = Property("sourcename")\
+  attacker_name = Property("attackername")\
     .apply(StringTableTrans("CombatLogNames"))\
     .apply(FuncTrans(lambda n: n[0]))
   """
   The name of the attacker in the event.
   """
 
-  value = Property("sourcename")
+  value = Property("value")
   """
   The value of the event. Can have various different meanings depending on the
   :attr:`type`.
