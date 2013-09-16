@@ -111,7 +111,7 @@ class ValueProperty(ExtractorProperty):
     if props is None:
       return None
 
-    return props[self.key]
+    return props.get(self.key, None)
 
 
 Property = ValueProperty
