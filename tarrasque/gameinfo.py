@@ -65,13 +65,13 @@ class GameInfo(DotaEntity):
 
   * ``"loading"`` - Players are loading into the game
   * ``"draft"`` - The draft state has begun
+  * ``"strategy"`` - Unknown
   * ``"pregame"`` - The game has started but creeps have not been
     spawned
   * ``"game"`` - The main game, between the first creep spawn and the
     ancient being destroyed
-
-  ``"unknown"`` is also a value that may be occasionally returned, but I've no
-  idea what it signifies. If you find out, let us know on #dota2replay
+  * ``"postgame"`` - After the ancient has been destroyed
+  * ``"disconnect"`` - Unknown
   """
 
   game_mode = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_iGameMode")\

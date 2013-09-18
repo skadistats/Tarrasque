@@ -27,10 +27,11 @@ LIFE_STATE_VALUES = {
 GAME_STATE_VALUES = {
   1: "loading",
   2: "draft",
-  3: "unknown",
+  3: "strategy time",
   4: "pregame",
   5: "game",
-  6: "postgame"
+  6: "postgame",
+  7: "disconnect"
 }
 
 GAME_MODE_VALUES = {
