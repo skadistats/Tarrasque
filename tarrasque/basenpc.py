@@ -69,7 +69,14 @@ class BaseNPC(DotaEntity):
   """
   A list of the NPC's abilities.
   """
-
+  
+  inventory = ArrayProperty('DT_DOTA_UnitInventory', 'm_hItems', array_length = 10)\
+    .filter(lambda h: h != NEGATIVE)\
+    .map(EntityTrans())
+  """
+  A list of the NPC's items.
+  """
+  
   @property
   def is_alive(self):
     """
