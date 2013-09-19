@@ -33,6 +33,15 @@ class Modifier(object):
   def exists(self):
     modifiers = self.stream_binding.modifiers
     return self.mhandle in modifier.by_parent.get(self.parent.ehandle, {})
+    
+  @property
+  def expire_time(self):
+    game_start_time = self.stream_binding.info.game_start_time
+    duration = self.duration
+    creation_time = self.created
+    
+    expire_time = creation_time + duration
+    return expire_time
 
   name = ModifierProperty("name")
   """
@@ -64,6 +73,11 @@ class Modifier(object):
   created = ModifierProperty("creation_time")
   """
   The game time that the modifier was applied.
+  """
+  
+  duration = ModifierProperty("duration")
+  """
+  The duration of the modifier.
   """
 
   def __repr__(self):
