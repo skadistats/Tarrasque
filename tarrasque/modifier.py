@@ -40,7 +40,7 @@ class Modifier(object):
     duration = self.duration
     creation_time = self.created
     
-    expire_time = creation_time - game_start_time + duration
+    expire_time = creation_time + duration
     return expire_time
 
   name = ModifierProperty("name")
