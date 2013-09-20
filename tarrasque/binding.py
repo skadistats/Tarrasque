@@ -244,6 +244,16 @@ class StreamBinding(object):
             p.index != None and p.team != "spectator"]
 
   @property
+  def heroes(self):
+    """
+    A list of :class:`Hero` objects, one for each hero in the game.
+    This excludes illusions.
+    """
+    from . import Hero
+
+    return [h for h in Hero.get_all_heroes(self)]
+
+  @property
   def info(self):
     """
     The :class:`GameInfo` object for the replay.
