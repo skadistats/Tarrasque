@@ -204,47 +204,15 @@ class FuncTrans(TransformerProperty):
     return self.value_func(raw)
 
 class EntityTrans(TransformerProperty):
-  def __init__(self, passed=None, set=None):
-    self.passed = passed or dict()
-    self.set = set or dict()
-
   def get_value(self, entity):
+    from . import entity as e
+
     # Hopefully an ehandle
     ehandle = self.chained.get_value(entity)
     if ehandle == NEGATIVE or ehandle == None:
       return
 
-    kwargs = {}
-    kwargs["ehandle"] = ehandle
-    kwargs["stream_binding"] = entity.stream_binding
-    for from_, to_ in self.passed.items():
-      if from_ == "self":
-        kwargs[to_] = entity
-      else:
-        kwargs[to_] = getattr(entity, from_)
-
-    target = self._find_target(ehandle, entity.world)
-
-    instance = target(**kwargs)
-
-    for from_, to_ in self.set.items():
-      if from_ == "self":
-        setattr(instance, to_, entity)
-      else:
-        setattr(instance, to_, getattr(entity, from_))
-
-    return instance
-
-  def _find_target(self, ehandle, world):
-    from . import entity
-    dt = world.recv_tables[world.classes[ehandle]].dt
-    if dt in entity.ENTITY_CLASSES:
-      return entity.ENTITY_CLASSES[dt]
-    for regexp, cls in entity.ENTITY_WILDCARDS:
-      if regexp.match(dt):
-        return cls
-
-    return entity.create_default_class(dt, world)
+    return e.create_entity(ehandle, entity.stream_binding)
 
 class StringTableTrans(TransformerProperty):
   def __init__(self, table_key, index_var="by_index"):
