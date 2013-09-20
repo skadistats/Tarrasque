@@ -65,5 +65,5 @@ Combat Log
 Item
 ----------
 
-.. automodule:: tarrasque.combatlog
+.. automodule:: tarrasque.item
    :members:
