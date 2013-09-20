@@ -124,3 +124,22 @@ class Hero(BaseNPC):
       if player.index == self._player_id:
         return player
     return None
+
+  @staticmethod
+  def get_all_heroes(stream_binding):
+    """
+    Overrides DotaEntity.get_all in order to return all heroes with the prefix
+     ```"DT_DOTA_Unit_Hero"```, as there is never any results for
+    ```"DT_DOTA_BaseNPC_Hero"```, and it also wouldn't be of any use to devs.
+    """
+    from . import entity
+
+    heroes = []
+    for ehandle, _ in stream_binding.world.find_all_by_dt(
+        "DT_DOTA_Unit_Hero_*").iteritems():
+      hero = entity.create_entity(ehandle, stream_binding)
+      # Avoid illusions
+      if hero.replicating_hero:
+        continue
+      heroes.append(hero)
+    return heroes

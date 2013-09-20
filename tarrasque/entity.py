@@ -47,8 +47,25 @@ def register_entity_wildcard(regexp):
     return cls
   return inner
 
-def create_default_class(dt_name, world):
+def find_entity_class(dt_name):
+  """
+  Returns the class that should be used to represent the ehandle with the given
+  dt name.
+  """
+  if dt_name in ENTITY_CLASSES:
+    return ENTITY_CLASSES[dt_name]
+  for regexp, cls in ENTITY_WILDCARDS:
+    if regexp.match(dt_name):
+      return cls
   return DotaEntity
+
+def create_entity(ehandle, stream_binding):
+  """
+  Finds the correct class for the ehandle and initialises it.
+  """
+  dt = stream_binding.world.fetch_recv_table(ehandle).dt
+  cls = find_entity_class(dt)
+  return cls(ehandle=ehandle, stream_binding=stream_binding)
 
 @register_entity("DT_BaseEntity")
 class DotaEntity(object):
@@ -187,3 +204,6 @@ class DotaEntity(object):
       return other.ehandle == self.ehandle
 
     return False
+
+  def __hash__(self):
+    return hash(self.ehandle)
