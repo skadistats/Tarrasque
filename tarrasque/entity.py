@@ -204,3 +204,6 @@ class DotaEntity(object):
       return other.ehandle == self.ehandle
 
     return False
+
+  def __hash__(self):
+    return hash(self.ehandle)
