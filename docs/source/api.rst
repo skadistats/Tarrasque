@@ -61,3 +61,9 @@ Combat Log
 
 .. automodule:: tarrasque.combatlog
    :members:
+   
+Item
+----------
+
+.. automodule:: tarrasque.item
+   :members:
