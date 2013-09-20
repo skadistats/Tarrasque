@@ -3,6 +3,7 @@ from .properties import *
 from .consts import *
 
 @register_entity("DT_DOTA_Item")
+@register_entity_wildcard("DT_DOTA_Item_*")
 class Item(DotaEntity):
     """
     Item class
