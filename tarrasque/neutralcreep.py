@@ -11,7 +11,7 @@ class NeutralCreep(LaneCreep):
     name = Property("DT_BaseEntity", "m_nModelIndex")\
         .apply(StringTableTrans("modelprecache"))\
         .apply(FuncTrans(lambda n: n[0]))\
+        .apply(FuncTrans(lambda n: re.findall('(?<=/)[a-z\_]+(?=\.mdl)', n)[0]))
         """
         Uses regexp to get a more readable creep name from the model name
         """
-        .apply(FuncTrans(lambda n: re.findall('(?<=/)[a-z\_]+(?=\.mdl)', n)[0]))
