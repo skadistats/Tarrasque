@@ -36,7 +36,6 @@ class Modifier(object):
     
   @property
   def expire_time(self):
-    game_start_time = self.stream_binding.info.game_start_time
     duration = self.duration
     creation_time = self.created
     
