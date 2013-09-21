@@ -7,6 +7,12 @@ Stream Binding
 .. automodule:: tarrasque.binding
    :members: StreamBinding
 
+Creep Manager
+-------------
+
+.. automodule:: tarrasque.creeps.manager
+   :members: CreepManager
+
 Dota Entity
 -----------
 
