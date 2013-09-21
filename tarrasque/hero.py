@@ -14,6 +14,9 @@ class Hero(BaseNPC):
   """
 
   def __new__(cls, *args, **kwargs):
+    if cls != Hero:
+      return BaseNPC.__new__(cls, *args, **kwargs)
+
     ehandle = kwargs.get("ehandle")
     stream_binding = kwargs.get("stream_binding")
 
