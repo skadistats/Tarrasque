@@ -10,6 +10,7 @@ from .gameevents import *
 from .combatlog import *
 from .lanecreep import *
 from .item import *
+from .neutralcreep import *
 
 __version__ = "0.1"
 __author__ = "Laurie Clark-Michalek"
