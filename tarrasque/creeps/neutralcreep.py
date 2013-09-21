@@ -1,5 +1,5 @@
 from ..properties import *
-from ..lanecreep import LaneCreep
+from .lanecreep import LaneCreep
 from ..entity import register_entity
 import re
 
