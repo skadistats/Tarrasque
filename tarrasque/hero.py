@@ -12,10 +12,9 @@ class Hero(BaseNPC):
   While all hero classes inherit from this class, it is unlikely that this class
   will ever need to be instantiated.
   """
-
   def __new__(cls, *args, **kwargs):
     if cls != Hero:
-      return BaseNPC.__new__(cls, *args, **kwargs)
+      return object.__new__(cls, *args, **kwargs)
 
     ehandle = kwargs.get("ehandle")
     stream_binding = kwargs.get("stream_binding")
@@ -31,7 +30,7 @@ class Hero(BaseNPC):
     cls.__init__(instance, *args, **kwargs)
     if not instance.name:
       split_name = [s for s in re.split("([A-Z][^A-Z]*)", cls_name) if s]
-      instance.name = " ".join(split_name)
+      cls.name = " ".join(split_name)
     return instance
 
   name = None
