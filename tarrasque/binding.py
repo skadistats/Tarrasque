@@ -269,5 +269,7 @@ class StreamBinding(object):
   @property
   def neutral_creeps(self):
     from . import NeutralCreep
-
-    return NeutralCreep.get_all(self)
+    """
+    A list of :class:'NeutralCreep' objects, only including currently alive ones
+    """
+    return [c for c in NeutralCreep.get_all(self) if c.is_alive]
