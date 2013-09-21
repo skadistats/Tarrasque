@@ -265,3 +265,9 @@ class StreamBinding(object):
     demo = skadi.demo.construct(filename)
 
     return StreamBinding(demo, *args, **kwargs)
+
+  @property
+  def neutral_creeps(self):
+    from . import NeutralCreep
+
+    return NeutralCreep.get_all(self)
