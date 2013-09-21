@@ -253,7 +253,6 @@ class StreamBinding(object):
     assert len(info) == 1
     return info[0]
 
-
   @staticmethod
   def from_file(filename, *args, **kwargs):
     """
@@ -265,11 +264,3 @@ class StreamBinding(object):
     demo = skadi.demo.construct(filename)
 
     return StreamBinding(demo, *args, **kwargs)
-
-  @property
-  def neutral_creeps(self):
-    from . import NeutralCreep
-    """
-    A list of :class:'NeutralCreep' objects, only including currently alive ones
-    """
-    return [c for c in NeutralCreep.get_all(self) if c.is_alive]

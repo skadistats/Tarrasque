@@ -1,6 +1,6 @@
-from .properties import *
-from .basenpc import BaseNPC
-from .entity import register_entity
+from ..properties import *
+from ..basenpc import BaseNPC
+from ..entity import register_entity
 
 @register_entity("DT_DOTA_BaseNPC_Creep_Lane")
 class LaneCreep(BaseNPC):
