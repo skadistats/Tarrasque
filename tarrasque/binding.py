@@ -253,6 +253,15 @@ class StreamBinding(object):
     assert len(info) == 1
     return info[0]
 
+  @property
+  def creeps(self):
+    """
+    The :class:`CreepManager` object for the replay.
+    """
+    from .creeps import CreepManager
+
+    return CreepManager(self)
+
   @staticmethod
   def from_file(filename, *args, **kwargs):
     """
