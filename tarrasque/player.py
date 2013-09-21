@@ -17,7 +17,7 @@ class Player(DotaEntity):
   The index of the player in the game. i.e. 0 is the first player on the
   radiant team, 9 is the last on the dire
 
-  This is -1 for the undefined player, which should be ignored.
+  This is ``None`` for the undefined player, which should be ignored.
   """
 
   hero = RemoteProperty("DT_DOTA_PlayerResource")\
