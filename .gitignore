@@ -1,5 +1,2 @@
 *.pyc
 build
-Tarrasque.egg-info/
-dist/
-.gitignore
