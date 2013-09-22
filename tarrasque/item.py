@@ -43,7 +43,7 @@ class Item(DotaEntity):
 
     initial_charges = Property('DT_DOTA_Item', 'm_iInitialCharges')
     """
-    Presumably charges when item is bought (ex: 8 for diffusal
+    Presumably charges when item is bought (ex: 8 for diffusal)
     """
     
     sharability = Property('DT_DOTA_Item', 'm_iSharability')
@@ -83,7 +83,8 @@ class Item(DotaEntity):
     
     permanent = Property('DT_DOTA_Item', 'm_bPermanent')
     """
-    No clue, someone investigate
+    Seems to be if the item will disappear when it runs out of stacks
+    (i.e consumable. Ex: Tango, not Diffusal)
     """
     
     alertable = Property('DT_DOTA_Item', 'm_bAlertable')
