@@ -25,3 +25,13 @@ class CreepManager(object):
 
     return [nc for nc in NeutralCreep.get_all(self.stream_binding)
             if nc.is_alive]
+
+  @property
+  def couriers(self):
+    """
+    Returns all couriers on the map
+    """
+
+    from .courier import Courier
+
+    return Courier.get_all(self.stream_binding)
