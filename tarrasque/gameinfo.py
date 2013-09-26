@@ -136,7 +136,7 @@ class GameInfo(DotaEntity):
   ``("pick", 2)``.
   """
 
-  game_winner = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_iHeroPickState")\
+  game_winner = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_nGameWinner")\
     .apply(MapTrans(WINNER_VALUES))
   """
   The winner of the game.
