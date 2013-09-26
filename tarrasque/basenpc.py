@@ -70,7 +70,7 @@ class BaseNPC(DotaEntity):
   A list of the NPC's abilities.
   """
   
-  inventory = ArrayProperty('DT_DOTA_UnitInventory', 'm_hItems', array_length = 10)\
+  inventory = ArrayProperty('DT_DOTA_UnitInventory', 'm_hItems', array_length = 14)\
     .filter(lambda h: h != NEGATIVE)\
     .map(EntityTrans())
   """
