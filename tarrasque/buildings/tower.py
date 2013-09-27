@@ -7,4 +7,3 @@ class Tower(Building):
 
   Represents a Tower in the game.
   """
-  
