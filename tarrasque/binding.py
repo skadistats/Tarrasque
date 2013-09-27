@@ -262,6 +262,14 @@ class StreamBinding(object):
 
     return CreepManager(self)
 
+  @property
+  def buildings(self):
+    """
+    The :class:`BuildingManager` object for the replay.
+    """
+    from .buildings import BuildingManager
+    return BuildingManager(self)
+	
   @staticmethod
   def from_file(filename, *args, **kwargs):
     """
