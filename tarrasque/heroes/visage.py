@@ -8,6 +8,8 @@ class Visage(Hero):
     """
     A specialized class for the hero Visage
     """
+
+    name = 'Visage'
     
     @property
     def familiars(self):
@@ -22,3 +24,5 @@ class Familiar(BaseNPC):
     """
     A class for visage familiars
     """
+
+    name = 'Familiar'
