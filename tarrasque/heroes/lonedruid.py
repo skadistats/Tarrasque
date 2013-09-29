@@ -9,6 +9,8 @@ class LoneDruid(Hero):
     A specialized class for the hero Lone Druid
     """
 
+    name = 'Lone Druid'
+
     @property
     def bear(self):
         return self.abilities[0].bear
@@ -26,3 +28,5 @@ class SpiritBear(Hero):
     """
     A class for LD's spirit bear
     """
+
+    name = 'Spirit Bear'
