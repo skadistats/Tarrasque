@@ -240,8 +240,9 @@ class StreamBinding(object):
     """
     from . import Player
 
-    return [p for p in Player.get_all(self) if
-            p.index != None and p.team != "spectator"]
+    return sorted([p for p in Player.get_all(self) if 
+                   p.index != None and p.team != "spectator"],
+                   key=lambda p:p.index)
 
   @property
   def info(self):
