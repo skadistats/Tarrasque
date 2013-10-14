@@ -160,6 +160,34 @@ class StreamBinding(object):
       self._user_messages = []
       self._game_events = []
 
+  def iter_full_ticks(self, start=None, end=None):
+    """
+    A generator that iterates through the demo's 'full ticks'; sync points
+    that occur once a minute. Should be _much_ faster than
+    :method:`iter_ticks`.
+
+    The ``start`` argument may take the same range of values as the ``start``
+    argument of :method:`iter_ticks`. The first full tick yielded will be the
+    next full tick after the position obtained via `self.go_to_tick(start)`.
+     The end tick may either be a tick value or a game state. The last full
+    tick yielded will be the first full tick after the tick value/game state
+    change.
+    """
+    if start is not None:
+      self.go_to_tick(start)
+
+    for _ in self._stream.iterfullticks():
+      if end:
+        if isinstance(end, basestring):
+          if self.info.game_state == end:
+            break
+        else:
+          if self.tick > end:
+            break
+      self._user_messages = []
+      self._game_events = []
+      yield self.tick
+
   def go_to_tick(self, tick):
     """
     Moves to the given tick, or the nearest tick after it. Returns the tick
@@ -167,10 +195,8 @@ class StreamBinding(object):
     """
     if isinstance(tick, str):
       return self.go_to_state_change(tick)
-
     if tick > self.demo.file_info.playback_ticks or tick < 0:
       raise IndexError("Tick {} out of range".format(tick))
-
     self._stream = self.demo.stream(tick=tick)
     self._user_messages = (self._stream.user_messages or [])[:]
     self._game_events = (self._stream.game_events or [])[:]
