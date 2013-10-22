@@ -3,6 +3,8 @@ from .utils import *
 
 class BaseProperty(object):
   exposed = True
+  _cache = {}
+  _tick = None
 
   def get_value(self, entity):
     raise NotImplementedError()
@@ -16,10 +18,18 @@ class BaseProperty(object):
       return self
     # Otherwise run the property
     else:
-      val = self.get_value(entity)
-      if isinstance(val, long):
-        return int(val)
-      return val
+      if not hasattr(entity, "tick") or entity.tick != self._tick:
+        self._cache = {}
+        self._tick = entity.tick
+
+      val = None
+      if not hasattr(entity, "ehandle") or entity.ehandle not in self._cache:
+        val = self.get_value(entity)
+        if isinstance(val, long):
+          return int(val)
+        self._cache[entity.ehandle] = val
+
+      return val or self._cache[entity.ehandle]
 
   def apply(self, chained):
     chained.set_chained(self)
