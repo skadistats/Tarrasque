@@ -29,7 +29,8 @@ class Hero(BaseNPC):
     instance = object.__new__(cls, *args, **kwargs)
     cls.__init__(instance, *args, **kwargs)
     if not instance.name:
-      split_name = [s for s in re.split("([A-Z][^A-Z]*)", cls_name) if s]
+      split_name = [s.replace("_", "") for s in
+                    re.split("([A-Z][^A-Z]*)", cls_name) if s]
       cls.name = " ".join(split_name)
     return instance
 
