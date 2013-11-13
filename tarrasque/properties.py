@@ -17,19 +17,26 @@ class BaseProperty(object):
     if issubclass(type(entity), BaseProperty) or entity is None:
       return self
     # Otherwise run the property
-    else:
-      if not hasattr(entity, "tick") or entity.tick != self._tick:
-        self._cache = {}
+    if hasattr(entity, "tick") and hasattr(entity, "ehandle"):
+      # If we have hit the next tick, clear the cache
+      if entity.tick != self._tick:
         self._tick = entity.tick
+        self._cache = {}
+      else:
+        # Otherwise, try and get the item out of the cache
+        try:
+          return self._cache[entity.ehandle]
+        except KeyError:
+          pass
 
-      val = None
-      if not hasattr(entity, "ehandle") or entity.ehandle not in self._cache:
-        val = self.get_value(entity)
-        if isinstance(val, long):
-          return int(val)
-        self._cache[entity.ehandle] = val
+        # Or calculate it, and add it to the cache
+        value = self.get_value(entity)
+        self._cache[entity.ehandle] = value
+        return value
 
-      return val or self._cache[entity.ehandle]
+      # Always account for the poor users who don't have an ehandle to
+      # go home to
+      return self.get_value(entity)
 
   def apply(self, chained):
     chained.set_chained(self)
