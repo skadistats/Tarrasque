@@ -22,21 +22,21 @@ class BaseProperty(object):
       if entity.tick != self._tick:
         self._tick = entity.tick
         self._cache = {}
-      else:
-        # Otherwise, try and get the item out of the cache
-        try:
-          return self._cache[entity.ehandle]
-        except KeyError:
-          pass
 
-        # Or calculate it, and add it to the cache
-        value = self.get_value(entity)
-        self._cache[entity.ehandle] = value
-        return value
+      # Try and get the item out of the cache
+      try:
+        return self._cache[entity.ehandle]
+      except KeyError:
+        pass
 
-      # Always account for the poor users who don't have an ehandle to
-      # go home to
-      return self.get_value(entity)
+      # Or calculate it, and add it to the cache
+      value = self.get_value(entity)
+      self._cache[entity.ehandle] = value
+      return value
+
+    # Always account for the poor users who don't have an ehandle to
+    # go home to
+    return self.get_value(entity)
 
   def apply(self, chained):
     chained.set_chained(self)
