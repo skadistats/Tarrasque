@@ -45,6 +45,13 @@ class PacketIndexTestCase(unittest.TestCase):
         eq_(len(ps), 524)
         eq_((ps[-1] if ps else fps[-1])[0].tick, tick)
 
+        prev_packet = None
+        for packet in fps + ps:
+            # Check for zero as we have many packets w/ tick = 0
+            if prev_packet and packet[0].tick != 0:
+                gt_(packet[0].tick, prev_packet[0].tick)
+            prev_packet = packet
+
 class PacketIterTestCase(unittest.TestCase):
     REPLAY_FILE = "./tests/fixtures/PL.dem"
 
