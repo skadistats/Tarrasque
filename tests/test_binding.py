@@ -5,7 +5,7 @@ import tarrasque
 from .utils import *
 
 class StreamBindingMovementTestCase(unittest.TestCase):
-    REPLAY_FILE = "./demo/PL.dem"
+    REPLAY_FILE = "./tests/fixtures/PL.dem"
 
     @classmethod
     def setUpClass(cls):
@@ -39,7 +39,7 @@ class StreamBindingMovementTestCase(unittest.TestCase):
             neq_(self.replay.info.game_state, state_name)
 
 class StreamBindingConstantTestCase(unittest.TestCase):
-    REPLAY_FILE = "./demo/PL.dem"
+    REPLAY_FILE = "./tests/fixtures/PL.dem"
 
     def setUp(self):
         self.replay = tarrasque.StreamBinding.from_file(self.REPLAY_FILE,

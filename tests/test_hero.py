@@ -5,7 +5,7 @@ import tarrasque
 from .utils import *
 
 class HeroTestCase(unittest.TestCase):
-    REPLAY_FILE = "./demo/PL.dem"
+    REPLAY_FILE = "./tests/fixtures/PL.dem"
 
     @classmethod
     def setUpClass(cls):
