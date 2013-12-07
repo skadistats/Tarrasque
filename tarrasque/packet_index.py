@@ -7,15 +7,15 @@ def _bin_search(lst, f):
     """
     t = len(lst)
     b = 0
-    while t > b:
+    while t-1 > b:
         m = (t + b) // 2
         v = f(lst[m])
         if v == 0:
             return m
         elif v == -1:
-            t = m
-        elif v == 1:
             b = m
+        elif v == 1:
+            t = m
     return b
 
 class PacketIter(object):
