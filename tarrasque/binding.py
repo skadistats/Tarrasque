@@ -90,9 +90,14 @@ class StreamBinding(object):
         return self._prologue
 
     def __init__(self, demo, start="game"):
+        import skadi.index.prologue
+
         self._demo = demo
         self._user_messages = []
         self._game_events = []
+
+        demo.bootstrap()
+        self._prologue = skadi.index.prologue.parse(demo)
 
         # This parses the replay
         self._packets = PacketIndex.from_demoio(self._demo)
@@ -114,7 +119,7 @@ class StreamBinding(object):
         """
         Moves to the end of the replay and populates the _state_change_times dict.
         """
-        self.go_to_tick(self.prologue.file_info.playback_ticks - 2)
+        self.go_to_tick(self._demo.file_info.playback_ticks - 2)
 
         self._state_change_times = {
           "draft": self.info.draft_start_time,
@@ -133,10 +138,10 @@ class StreamBinding(object):
 
         # Have to handle case of ([fp,..], [])
         if not ps:
-            last_packet, _ = fps[-1]
+            last_peek, _ = fps[-1]
         else:
-            last_packet, _ = ps[-1]
-        return last_packet.tick
+            last_peek, _ = ps[-1]
+        return last_peek.tick
 
     def iter_ticks(self, start=None, end=None, step=1):
         """
@@ -315,8 +320,9 @@ class StreamBinding(object):
         Loads the demo from the filename, and then initialises the
         :class:`StreamBinding` with it, along with any other passed arguments.
         """
-        import skadi.demo
+        import skadi.io.demo
 
-        demo = skadi.demo.construct(filename)
+        with open(filename, "rb") as demo_file:
+            demo_io = skadi.io.demo.mk(demo_file)
 
-        return StreamBinding(demo, *args, **kwargs)
+            return StreamBinding(demo_io)
