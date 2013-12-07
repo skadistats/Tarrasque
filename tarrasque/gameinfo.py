@@ -136,6 +136,30 @@ class GameInfo(DotaEntity):
   ``("pick", 2)``.
   """
 
+  extra_time = ArrayProperty("DT_DOTAGamerules", "m_fExtraTimeRemaining", array_length=2)
+  """
+  Extra time left for both teams. A list, entry 0 is radiant, entry 1 is dire
+  """
+
+  captain_ids = ArrayProperty("DT_DOTAGamerules", "m_iCaptainPlayerIDs", array_length=2)
+  """
+  IDs of the picking players (captains)
+  """
+
+  banned_heroes = ArrayProperty("DT_DOTAGamerules", "m_BannedHeroes", array_length=10)\
+    .apply(FuncTrans(map_foreach(HERO_VALUES)))
+
+  """
+  Extra time left for both teams. A list, entry 0 is radiant, entry 1 is dire
+  Extra time left for both teams. A list, entry 0 is radiant, entry 1 is dire
+  """
+
+  selected_heroes = ArrayProperty("DT_DOTAGamerules", "m_SelectedHeroes", array_length=10)\
+    .apply(FuncTrans(map_foreach(HERO_VALUES)))
+  """
+  Extra time left for both teams. A list, entry 0 is radiant, entry 1 is dire
+  """
+
   game_winner = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_nGameWinner")\
     .apply(MapTrans(WINNER_VALUES))
   """
