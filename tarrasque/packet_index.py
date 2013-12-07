@@ -7,7 +7,7 @@ def _bin_search(lst, f):
     """
     t = len(lst)
     b = 0
-    while t-1 > b:
+    while t > b:
         m = (t + b) // 2
         v = f(lst[m])
         if v == 0:

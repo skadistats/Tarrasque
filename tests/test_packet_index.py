@@ -11,12 +11,13 @@ from .utils import *
 
 def test_bin_search():
     def i_f(v):
-      if v == 55:
-        return 0
-      elif v < 55:
-        return -1
-      else:
-        return 1
+        if v == 55:
+            return 0
+        elif v < 55:
+            return -1
+        else:
+            return 1
+        assert False
 
     eq_(55, packet_index._bin_search(range(100), i_f))
     eq_(155, packet_index._bin_search(range(-100, 100), i_f))
