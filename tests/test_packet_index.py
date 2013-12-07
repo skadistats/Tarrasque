@@ -40,3 +40,29 @@ class PacketIndexTestCase(unittest.TestCase):
         fps, ps = pi.packets_for_tick(1050)
         eq_(len(fps), 1)
         eq_(len(ps), 524)
+
+class PacketIterTestCase(unittest.TestCase):
+    REPLAY_FILE = "./tests/fixtures/PL.dem"
+
+    def setUp(self):
+        self.demo_file = open(self.REPLAY_FILE, "rb")
+        self.demoio = skadi.io.demo.mk(self.demo_file)
+        self.demoio.bootstrap()
+        self.packet_index = packet_index.PacketIndex.from_demoio(self.demoio)
+
+    def test_create_packet_iter(self):
+        i = iter(self.packet_index)
+
+    def test_forward(self):
+        i = iter(self.packet_index)
+        i.move(1050)
+        t1 = i.next()
+        t2 = i.next()
+        gt_(t2[0].tick, t1[0].tick)
+
+    def test_backwards(self):
+        i = iter(self.packet_index)
+        i.move(1050)
+        t1 = i.prev()
+        t2 = i.prev()
+        gt_(t1[0].tick, t2[0].tick)

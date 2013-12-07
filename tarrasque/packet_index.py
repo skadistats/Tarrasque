@@ -19,9 +19,9 @@ def _bin_search(lst, f):
     return b
 
 class PacketIter(object):
-    def __iter__(self, pi):
+    def __init__(self, pi):
         self.pi = pi
-        self.pos = 0
+        self.pos = -1
 
     @property
     def current(self):
@@ -31,18 +31,18 @@ class PacketIter(object):
         self.pos = pos
 
     def next(self):
+        self.pos += 1
         try:
-            p = self.pi.packets[self.pos]
+            return self.pi.packets[self.pos]
         except IndexError:
             raise StopIteration()
-        self.pos -= 1
 
     def prev(self):
+        self.pos -= 1
         try:
-            p = self.pi.packets[self.pos]
+            return self.pi.packets[self.pos]
         except IndexError:
             raise StopIteration()
-        self.pos += 1
 
     def reverse(self):
         while True:
@@ -134,12 +134,7 @@ class PacketIndex(object):
         return self._search_packets_by_func(index_f)
 
     def __iter__(self):
-        """
-        Iterates through all of the packets in order. Should be equal to the
-        original iteration through the DemoIO object (if constructed using
-        from_demoio).
-        """
-        return iter(self.packets)
+        return PacketIter(self)
 
     def __repr__(self):
         fmt = "<PacketIndex: {} fp, {} p>"
