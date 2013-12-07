@@ -13,7 +13,7 @@ class Courier(BaseNPC):
     Returns a float of the courier's time until respawn.
     Returns 0.0 if courier is alive
     """
-    
+
 
     is_flying = Property('DT_DOTA_Unit_Courier', 'm_bFlyingCourier')
     """

@@ -10,7 +10,7 @@ class Visage(Hero):
     """
 
     name = 'Visage'
-    
+
     @property
     def familiars(self):
         """
@@ -18,7 +18,7 @@ class Visage(Hero):
         Seems to only work on living familiars
         """
         return Familiar.get_all(self.stream_binding)
-    
+
 @register_entity('DT_DOTA_Unit_VisageFamiliar')
 class Familiar(BaseNPC):
     """
