@@ -3,6 +3,7 @@ import unittest
 import importlib
 import os
 
+from protobuf.impl import demo_pb2 as pb_d
 import skadi.io.demo
 
 from tarrasque import packet_index
@@ -36,10 +37,13 @@ class PacketIndexTestCase(unittest.TestCase):
         eq_(len(pi.full_indexes), 35)
 
     def test_packets_for_tick(self):
+        tick = 1050
+
         pi = packet_index.PacketIndex.from_demoio(self.demoio)
-        fps, ps = pi.packets_for_tick(1050)
+        fps, ps = pi.packets_for_tick(tick)
         eq_(len(fps), 1)
         eq_(len(ps), 524)
+        eq_((ps[-1] if ps else fps[-1])[0].tick, tick)
 
 class PacketIterTestCase(unittest.TestCase):
     REPLAY_FILE = "./tests/fixtures/PL.dem"
@@ -66,3 +70,28 @@ class PacketIterTestCase(unittest.TestCase):
         t1 = i.prev()
         t2 = i.prev()
         gt_(t1[0].tick, t2[0].tick)
+
+    def test_move(self):
+        i = iter(self.packet_index)
+        j = iter(self.packet_index)
+        i.move(1050)
+        j.move(1050)
+        eq_(i.current[0].tick, j.current[0].tick)
+
+        eq_(i.next()[0].tick, j.next()[0].tick)
+
+        i.move(2050)
+        old_p = i.current
+        i.move(2050)
+        eq_(old_p, i.current)
+
+    def test_full_ticks(self):
+        i = iter(self.packet_index)
+        i.move(2050)
+        p1 = i.next_full()
+        p2 = i.next_full()
+        gt_(p2[0].tick, p1[0].tick)
+        eq_(p1[0].tick, i.prev_full()[0].tick)
+
+        eq_(p1[0].kind, pb_d.DEM_FullPacket)
+        eq_(p2[0].kind, pb_d.DEM_FullPacket)

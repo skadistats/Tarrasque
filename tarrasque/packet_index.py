@@ -23,6 +23,9 @@ class PacketIter(object):
         self.pi = pi
         self.pos = -1
 
+    def __iter__(self):
+        return self
+
     @property
     def current(self):
         return self.pi.packets[self.pos]
