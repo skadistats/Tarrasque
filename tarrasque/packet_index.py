@@ -1,22 +1,5 @@
 from protobuf.impl import demo_pb2 as pb_d
 
-def _bin_search(lst, f):
-    """
-    Searches a sorted list for an index where f(lst[i]) = 0 or f(lst[i-1]) !=
-    f(lst[i]).
-    """
-    t = len(lst)
-    b = 0
-    while t > b:
-        m = (t + b) // 2
-        v = f(lst[m])
-        if v == 0:
-            return m
-        elif v == -1:
-            b = m
-        elif v == 1:
-            t = m
-    return b
 
 class PacketIter(object):
     def __init__(self, pi):
@@ -108,33 +91,19 @@ class PacketIndex(object):
                 packets.append(entry)
         return cls(packets, full_indexes)
 
-    def _search_packets_by_func(self, func):
-        """
-        Performs a binary search using the given comparison function and then
-        returns the full packets and packets needed to recreate the game state
-        at the point that the comparison function indicated.
-        """
-        p_index = _bin_search(self.packets, func)
-        fpi = [i for i in self.full_indexes if i <= p_index]
-        fps = [self.packets[i] for i in fpi]
-        ps = self.packets[fpi[-1]:p_index+1]
-        return fps, ps
-
     def packets_for_tick(self, tick):
         """
         Returns the packets needed to reconstruct the match state for the given tick.
         """
-        def index_f(entity):
-            peek, _ = entity
-            if peek.tick < tick:
-                return -1
-            elif peek.tick == tick:
-                return 0
-            elif peek.tick > tick:
-                return 1
-            assert False
+        fpi = [i for i in self.full_indexes if self.packets[i][0].tick <= tick]
+        fps = [self.packets[i] for i in fpi]
+        ps = []
+        for packet in self.packets[fpi[-1]+1:]:
+            if packet[0].tick > tick:
+                break
+            ps.append(packet)
 
-        return self._search_packets_by_func(index_f)
+        return fps, ps
 
     def __iter__(self):
         return PacketIter(self)

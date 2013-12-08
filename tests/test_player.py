@@ -10,7 +10,7 @@ class PlayerTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.replay = tarrasque.StreamBinding.from_file(cls.REPLAY_FILE,
-                                                       start_tick=10000)
+                                                       start=10000)
         cls.player = cls.replay.players[4]
 
     def test_players_have_names(self):

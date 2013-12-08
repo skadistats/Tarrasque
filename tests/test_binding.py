@@ -43,7 +43,7 @@ class StreamBindingConstantTestCase(unittest.TestCase):
 
     def setUp(self):
         self.replay = tarrasque.StreamBinding.from_file(self.REPLAY_FILE,
-                                                        start_tick="game")
+                                                        start="game")
 
     def test_number_of_players(self):
         eq_(len(self.replay.players), 10)

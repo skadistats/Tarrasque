@@ -10,7 +10,7 @@ class HeroTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.replay = tarrasque.StreamBinding.from_file(cls.REPLAY_FILE,
-                                                       start_tick=10000)
+                                                       start=10000)
         cls.heroes = [p.hero for p in cls.replay.players]
         cls.player = cls.replay.players[4]
         cls.hero = cls.player.hero

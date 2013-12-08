@@ -10,19 +10,6 @@ from tarrasque import packet_index
 
 from .utils import *
 
-def test_bin_search():
-    def i_f(v):
-        if v == 55:
-            return 0
-        elif v < 55:
-            return -1
-        else:
-            return 1
-        assert False
-
-    eq_(55, packet_index._bin_search(range(100), i_f))
-    eq_(155, packet_index._bin_search(range(-100, 100), i_f))
-
 class PacketIndexTestCase(unittest.TestCase):
     REPLAY_FILE = "./tests/fixtures/PL.dem"
 
@@ -42,7 +29,7 @@ class PacketIndexTestCase(unittest.TestCase):
         pi = packet_index.PacketIndex.from_demoio(self.demoio)
         fps, ps = pi.packets_for_tick(tick)
         eq_(len(fps), 1)
-        eq_(len(ps), 524)
+        eq_(len(ps), 523)
         eq_((ps[-1] if ps else fps[-1])[0].tick, tick)
 
         prev_packet = None

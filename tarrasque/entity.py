@@ -81,6 +81,10 @@ class DotaEntity(object):
         self._stream_binding = stream_binding
         self._ehandle = ehandle
 
+        self._cls = self._stream_binding.prologue.cls_by_dt[self.dt]
+        by_cls = self._stream_binding.prologue.recv_tables.by_cls
+        self._recv_table = by_cls[self._cls]
+
     team = Property("DT_BaseEntity", "m_iTeamNum")\
       .apply(MapTrans(TEAM_VALUES))
     """
@@ -128,14 +132,6 @@ class DotaEntity(object):
         return self._stream_binding
 
     @property
-    def world(self):
-        """
-        The world object for the current tick. Accessed via
-        :attr:``stream_binding``.
-        """
-        return self.stream_binding.world
-
-    @property
     def tick(self):
         """
         The current tick number.
@@ -147,7 +143,8 @@ class DotaEntity(object):
         """
         Return the data associated with the handle for the current tick.
         """
-        return self.world.find(self.ehandle)
+        entities_by_ehandle = self._stream_binding.entities.entry_by_ehandle
+        return entities_by_ehandle[self._ehandle][1].state
 
     @property
     def exists(self):
@@ -157,12 +154,8 @@ class DotaEntity(object):
         illusion is killed, or at the start of a game when not all heroes have
         been chosen.
         """
-        try:
-            self.world.find(self.ehandle)
-        except KeyError:
-            return False
-        else:
-            return True
+        entities_by_ehandle = self._stream_binding.entities.entry_by_ehandle
+        return self.ehandle in entities_by_ehandle
 
     @property
     def modifiers(self):
@@ -194,8 +187,10 @@ class DotaEntity(object):
         the usual 10, where as :attr:`StreamBinding.players` returns the
         standard (and correct) 10.
         """
+        cls = binding.prologue.cls_by_dt[cls.dt_key]
+
         output = []
-        for ehandle, _ in binding.world.find_all_by_dt(cls.dt_key).items():
+        for _, entry in binding.entities.entries_by_cls[cls]:
             output.append(cls(ehandle=ehandle, stream_binding=binding))
         return output
 

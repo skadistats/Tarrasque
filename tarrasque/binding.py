@@ -48,18 +48,25 @@ class StreamBinding(object):
     # Just another layer of indirection
     # These are properties for autodoc reasons mostly
     @property
-    def world(self):
+    def entities(self):
         """
-        The Skadi wold object for the current tick.
+        Entities for the current tick.
         """
-        return self._snapshot.world
+        return self.snapshot.entities
+
+    @property
+    def snapshot(self):
+        """
+        The most recent snapshot.
+        """
+        return self._match.snapshots[-1]
 
     @property
     def tick(self):
         """
         The current tick.
         """
-        return self._snapshot.tick
+        return self.snapshot.tick
 
     @property
     def demo(self):
@@ -73,14 +80,14 @@ class StreamBinding(object):
         """
         The Skadi modifiers object for the tick.
         """
-        return self._snapshot.modifiers
+        return self.snapshot.modifiers
 
     @property
     def string_tables(self):
         """
         The string_table provided by Skadi.
         """
-        return self._snapshot.string_tables
+        return self.snapshot.string_tables
 
     @property
     def prologue(self):
@@ -89,18 +96,29 @@ class StreamBinding(object):
         """
         return self._prologue
 
+    @property
+    def epilogue(self):
+        """
+        The epilogue of the replay.
+        """
+        return self._epilogue
+
     def __init__(self, demo, start="game"):
         import skadi.index.prologue
+        import skadi.index.epilogue
 
         self._demo = demo
         self._user_messages = []
         self._game_events = []
 
-        demo.bootstrap()
+        gio = demo.bootstrap()
         self._prologue = skadi.index.prologue.parse(demo)
 
-        # This parses the replay
+        # This parses the replay (and moves the demoio handle)
         self._packets = PacketIndex.from_demoio(self._demo)
+
+        demo.handle.seek(gio)
+        self._epilogue = skadi.index.epilogue.parse(demo)
 
         self._populate_state_change_times()
 
@@ -119,14 +137,14 @@ class StreamBinding(object):
         """
         Moves to the end of the replay and populates the _state_change_times dict.
         """
-        self.go_to_tick(self._demo.file_info.playback_ticks - 2)
+        self.go_to_tick(self._epilogue.playback_ticks - 2)
 
-        self._state_change_times = {
-          "draft": self.info.draft_start_time,
-          "pregame": self.info.pregame_start_time,
-          "game": self.info.game_start_time,
-          "postgame": self.info.game_end_time
-        }
+        # self._state_change_times = {
+        #   "draft": self.info.draft_start_time,
+        #   "pregame": self.info.pregame_start_time,
+        #   "game": self.info.game_start_time,
+        #   "postgame": self.info.game_end_time
+        # }
 
     def go_to_tick(self, tick):
         """
@@ -325,4 +343,4 @@ class StreamBinding(object):
         with open(filename, "rb") as demo_file:
             demo_io = skadi.io.demo.mk(demo_file)
 
-            return StreamBinding(demo_io)
+            return StreamBinding(demo_io, *args, **kwargs)
