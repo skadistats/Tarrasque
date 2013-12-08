@@ -138,7 +138,7 @@ class GameInfo(DotaEntity):
 
   extra_time = ArrayProperty("DT_DOTAGamerules", "m_fExtraTimeRemaining", array_length=2)
   """
-  Extra time left for both teams. A list, entry 0 is radiant, entry 1 is dire
+  Extra time left for both teams. Index 0 is radiant, index 1 is dire
   """
 
   captain_ids = ArrayProperty("DT_DOTAGamerules", "m_iCaptainPlayerIDs", array_length=2)
@@ -150,14 +150,13 @@ class GameInfo(DotaEntity):
     .apply(FuncTrans(map_foreach(HERO_VALUES)))
 
   """
-  Extra time left for both teams. A list, entry 0 is radiant, entry 1 is dire
-  Extra time left for both teams. A list, entry 0 is radiant, entry 1 is dire
+  List of currently banned heroes. 0-4 are radiant picks, 5-9 dire. Bans that have not yet been done have value None.
   """
 
   selected_heroes = ArrayProperty("DT_DOTAGamerules", "m_SelectedHeroes", array_length=10)\
     .apply(FuncTrans(map_foreach(HERO_VALUES)))
   """
-  Extra time left for both teams. A list, entry 0 is radiant, entry 1 is dire
+   List of currently picked heroes. 0-4 are radiant picks, 5-9 dire. Picks that have not yet been done have value None.
   """
 
   game_winner = Property("DT_DOTAGamerulesProxy", "DT_DOTAGamerules.m_nGameWinner")\
