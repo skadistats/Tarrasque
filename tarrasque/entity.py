@@ -3,6 +3,8 @@ from importlib import import_module
 import sys
 import re
 
+import skadi.state.collection.entities
+
 from .consts import *
 from .properties import *
 
@@ -81,9 +83,8 @@ class DotaEntity(object):
         self._stream_binding = stream_binding
         self._ehandle = ehandle
 
-        self._cls = self._stream_binding.prologue.cls_by_dt[self.dt]
-        by_cls = self._stream_binding.prologue.recv_tables.by_cls
-        self._recv_table = by_cls[self._cls]
+        cls = self._stream_binding.prologue.cls_by_dt[self.dt_key]
+        self.recv_table = self._stream_binding.prologue.recv_tables.by_cls[cls]
 
     team = Property("DT_BaseEntity", "m_iTeamNum")\
       .apply(MapTrans(TEAM_VALUES))
@@ -143,8 +144,30 @@ class DotaEntity(object):
         """
         Return the data associated with the handle for the current tick.
         """
-        entities_by_ehandle = self._stream_binding.entities.entry_by_ehandle
-        return entities_by_ehandle[self._ehandle][1].state
+        o_self = self
+        class PropertyNameIndexThingy(object):
+            def __getitem__(self, propname):
+                properties = o_self.recv_table.by_name[propname[1]]
+
+                if len(properties) == 0:
+                    raise IndexError(propname[1])
+                assert len(properties) == 1, "Ambiguous property name"
+
+                property = properties[0]
+
+                assert property.src == propname[0]
+
+                entities =  o_self._stream_binding.entities.entry_by_ehandle
+                state = entities[o_self.ehandle][1].state
+                return state[name]
+
+            def get(self, name, default=None):
+                try:
+                    return self[name]
+                except IndexError:
+                    return default
+
+        return PropertyNameIndexThingy()
 
     @property
     def exists(self):
@@ -187,10 +210,12 @@ class DotaEntity(object):
         the usual 10, where as :attr:`StreamBinding.players` returns the
         standard (and correct) 10.
         """
-        cls = binding.prologue.cls_by_dt[cls.dt_key]
+        cls_i = binding.prologue.cls_by_dt[cls.dt_key]
 
         output = []
-        for _, entry in binding.entities.entries_by_cls[cls]:
+        to_e = skadi.state.collection.entities.to_e
+        for _, entry in binding.entities.entries_by_cls[cls_i]:
+            ehandle = to_e(entry.ind, entry.serial)
             output.append(cls(ehandle=ehandle, stream_binding=binding))
         return output
 
