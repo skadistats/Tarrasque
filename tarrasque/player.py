@@ -35,6 +35,7 @@ class Player(DotaEntity):
     """
     The player's reliable gold.
     """
+    team = self.team.capitalize()
     try:
       prop = RemoteProperty("DT_DOTA_Data{}".format(team))\
           .used_by(IndexedProperty("DT_DOTA_DataNonSpectator", "m_iReliableGold")) 
@@ -49,7 +50,6 @@ class Player(DotaEntity):
     except (KeyError, IndexError):
       pass
 
-    team = self.team.capitalize()
     dt_class = "DT_{}Data".format(team)
     dt_prop = "m_iReliableGold{}.{:04d}".format(team, self.index)
     prop = RemoteProperty("DT_DOTA_PlayerResource")\
@@ -61,6 +61,7 @@ class Player(DotaEntity):
     """
     The player's unreliable gold.
     """
+    team = self.team.capitalize()
     try:
       prop = RemoteProperty("DT_DOTA_Data{}".format(team))\
           .used_by(IndexedProperty("DT_DOTA_DataNonSpectator", "m_iUnreliableGold")) 
@@ -75,7 +76,6 @@ class Player(DotaEntity):
     except KeyError:
       pass
 
-    team = self.team.capitalize()
     dt_class = "DT_{}Data".format(team)
     dt_prop = "m_iUnreliableGold{}.{:04d}".format(team, self.index)
     prop = RemoteProperty("DT_DOTA_PlayerResource")\
