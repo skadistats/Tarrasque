@@ -147,24 +147,19 @@ class DotaEntity(object):
         o_self = self
         class PropertyNameIndexThingy(object):
             def __getitem__(self, propname):
-                properties = o_self.recv_table.by_name[propname[1]]
+                pindex, prop = o_self.recv_table.by_tuple[propname]
 
-                if len(properties) == 0:
-                    raise IndexError(propname[1])
-                assert len(properties) == 1, "Ambiguous property name"
-
-                property = properties[0]
-
-                assert property.src == propname[0]
-
-                entities =  o_self._stream_binding.entities.entry_by_ehandle
+                entities = o_self._stream_binding.entities.entry_by_ehandle
                 state = entities[o_self.ehandle][1].state
-                return state[name]
+                try:
+                    return state[pindex]
+                except KeyError:
+                    raise KeyError(propname)
 
             def get(self, name, default=None):
                 try:
                     return self[name]
-                except IndexError:
+                except KeyError:
                     return default
 
         return PropertyNameIndexThingy()
