@@ -1,5 +1,26 @@
+import warnings
+
 from .consts import *
 from .utils import *
+
+class PropertyNameProxy(object):
+    def __init__(self, recv_table, state):
+        self.recv_table = recv_table
+        self.state = state
+
+    def __getitem__(self, propname):
+        pindex, prop = self.recv_table.by_tuple[propname]
+
+        try:
+            return self.state[pindex]
+        except KeyError:
+            raise KeyError(propname)
+
+    def get(self, name, default=None):
+        try:
+            return self[name]
+        except KeyError:
+            return default
 
 class BaseProperty(object):
     exposed = True
@@ -101,9 +122,19 @@ class RemoteProperty(ProviderProperty):
         self.dt = dt_name
 
     def get_value(self, entity):
-        world = entity.world
-        _, properties = world.find_by_dt(self.dt)
-        return properties
+        cls = entity._stream_binding.prologue.cls_by_dt[self.dt]
+        recv_table = entity._stream_binding.prologue.recv_tables.by_cls[cls]
+
+        entries = entity._stream_binding.entities.entries_by_cls[cls]
+
+        if not entries:
+            return
+        elif len(entries) > 1:
+            warnings.warn("non-unique dt for RemoteProperty")
+
+        _, entry = entries[0]
+
+        return PropertyNameProxy(recv_table, entry.state)
 
 class ExtractorProperty(BaseProperty):
     chained = LocalProperty()

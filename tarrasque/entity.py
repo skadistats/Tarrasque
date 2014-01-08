@@ -144,25 +144,9 @@ class DotaEntity(object):
         """
         Return the data associated with the handle for the current tick.
         """
-        o_self = self
-        class PropertyNameIndexThingy(object):
-            def __getitem__(self, propname):
-                pindex, prop = o_self.recv_table.by_tuple[propname]
+        _, entity = self._stream_binding.entities.entry_by_ehandle[self.ehandle]
 
-                entities = o_self._stream_binding.entities.entry_by_ehandle
-                state = entities[o_self.ehandle][1].state
-                try:
-                    return state[pindex]
-                except KeyError:
-                    raise KeyError(propname)
-
-            def get(self, name, default=None):
-                try:
-                    return self[name]
-                except KeyError:
-                    return default
-
-        return PropertyNameIndexThingy()
+        return PropertyNameProxy(self.recv_table, entity.state)
 
     @property
     def exists(self):
