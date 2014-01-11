@@ -1,6 +1,8 @@
 import collections
+import warnings
 
 import skadi.state.match as stt_mtch
+from protobuf.impl import demo_pb2 as pb_d
 
 from tarrasque.packet_index import PacketIndex
 
@@ -114,17 +116,16 @@ class StreamBinding(object):
         gio = demo.bootstrap()
         self._prologue = skadi.index.prologue.parse(demo)
 
-        # This parses the replay (and moves the demoio handle)
-        self._packets = PacketIndex.from_demoio(self._demo)
+        self._demo_start = demo.handle.tell()
 
         demo.handle.seek(gio)
         self._epilogue = skadi.index.epilogue.parse(demo)
 
+        self.reset()
+
         self._populate_state_change_times()
 
-        if start == "end":
-            pass
-        elif isinstance(start, basestring):
+        if isinstance(start, basestring):
             self.go_to_state_change(start)
         elif isinstance(start, int):
             self.go_to_tick(start)
@@ -139,27 +140,66 @@ class StreamBinding(object):
         """
         self.go_to_tick(self._epilogue.playback_ticks - 2)
 
-        # self._state_change_times = {
-        #   "draft": self.info.draft_start_time,
-        #   "pregame": self.info.pregame_start_time,
-        #   "game": self.info.game_start_time,
-        #   "postgame": self.info.game_end_time
-        # }
+        self._state_change_times = {
+            "draft": self.info.draft_start_time,
+            "pregame": self.info.pregame_start_time,
+            "game": self.info.game_start_time,
+            "postgame": self.info.game_end_time
+        }
+
+    def reset(self):
+        self._demo.handle.seek(self._demo_start)
+
+        first_packet = first_full = None
+        while first_packet is None or first_full is None:
+            try:
+                peek, _ = entry = next(iter(self._demo))
+            except StopIteration:
+                raise RuntimeError("Empty demo?")
+
+            if peek.kind == pb_d.DEM_FullPacket:
+                if first_packet is not None:
+                    warnings.warn("first packet was not full")
+                    first_packet = None
+                first_full = entry
+            elif peek.kind == pb_d.DEM_Packet:
+                first_packet = entry
+            else:
+                warnings.warn("unrecognised packet: " + str(peek.kind))
+
+        self._match = stt_mtch.mk(self._prologue, [first_full], [first_packet])
+
+    def advance_tick(self):
+        for peek, message in self.demo:
+            if peek.kind == pb_d.DEM_FullPacket:
+                continue
+            elif peek.kind != pb_d.DEM_Packet:
+                assert peek.kind != pb_d.DEM_Stop
+                return False
+            pb = pb_d.CDemoPacket()
+            pb.ParseFromString(message)
+            self._match.snapshot(peek.tick, pb.data)
+
+    def advance_full_tick(self):
+        for peek, _ in self.demo:
+            if peek.kind == pb_d.DEM_FullPacket:
+                break
+        return self.advance_tick()
 
     def go_to_tick(self, tick):
         """
         Moves to the given tick, or the next tick after it. Returns the tick moved
         to.
         """
-        fps, ps = self._packets.packets_for_tick(tick)
-        self._match = stt_mtch.mk(self._prologue, fps, ps)
+        if self.tick > tick:
+            self.reset()
 
-        # Have to handle case of ([fp,..], [])
-        if not ps:
-            last_peek, _ = fps[-1]
-        else:
-            last_peek, _ = ps[-1]
-        return last_peek.tick
+        while self.tick < tick:
+            ended = not self.advance_tick()
+            if ended:
+                break
+
+        return self.tick
 
     def iter_ticks(self, start=None, end=None, step=1):
         """
@@ -187,12 +227,17 @@ class StreamBinding(object):
         self._game_events = []
 
         last_tick = self.tick - step - 1
-        for _ in self._stream:
+        while self.advance_tick():
+
             if isinstance(end, str):
                 if self.info.game_state == end:
                     break
-            elif self.tick >= end:
-                break
+            elif isinstance(end, float):
+                if self.info.game_time < end:
+                    break
+            else:
+                if self.tick >= end:
+                    break
 
             self._user_messages.extend(self._stream.user_messages)
             self._game_events.extend(self._stream.game_events)
@@ -239,7 +284,6 @@ class StreamBinding(object):
         self._game_events = (self._stream.game_events or [])[:]
 
         yield self.tick
-
 
     def go_to_time(self, time):
         """
