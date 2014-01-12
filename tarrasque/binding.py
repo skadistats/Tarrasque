@@ -2,9 +2,9 @@ import collections
 import warnings
 
 import skadi.state.match as stt_mtch
-from protobuf.impl import demo_pb2 as pb_d
+import skadi.demo
 
-from tarrasque.packet_index import PacketIndex
+from protobuf.impl import demo_pb2 as pb_d
 
 class StreamBinding(object):
     """
@@ -147,27 +147,12 @@ class StreamBinding(object):
             "postgame": self.info.game_end_time
         }
 
-    def reset(self):
+    def reset(self, pos=0):
         self._demo.handle.seek(self._demo_start)
 
-        first_packet = first_full = None
-        while first_packet is None or first_full is None:
-            try:
-                peek, _ = entry = next(iter(self._demo))
-            except StopIteration:
-                raise RuntimeError("Empty demo?")
-
-            if peek.kind == pb_d.DEM_FullPacket:
-                if first_packet is not None:
-                    warnings.warn("first packet was not full")
-                    first_packet = None
-                first_full = entry
-            elif peek.kind == pb_d.DEM_Packet:
-                first_packet = entry
-            else:
-                warnings.warn("unrecognised packet: " + str(peek.kind))
-
-        self._match = stt_mtch.mk(self._prologue, [first_full], [first_packet])
+        fps, ps = skadi.demo.preroll(self._demo, pos)
+        
+        self._match = stt_mtch.mk(self._prologue, fps, ps)
 
     def advance_tick(self):
         for peek, message in self.demo:
@@ -191,13 +176,7 @@ class StreamBinding(object):
         Moves to the given tick, or the next tick after it. Returns the tick moved
         to.
         """
-        if self.tick > tick:
-            self.reset()
-
-        while self.tick < tick:
-            ended = not self.advance_tick()
-            if ended:
-                break
+        self.reset(tick)
 
         return self.tick
 

@@ -65,8 +65,9 @@ def create_entity(ehandle, stream_binding):
     """
     Finds the correct class for the ehandle and initialises it.
     """
-    dt = stream_binding.world.fetch_recv_table(ehandle).dt
-    cls = find_entity_class(dt)
+    s_cls = stream_binding.prologue.cls_by_ehandle[ehandle]
+    rt = stream_binding.prologue.recv_tables.by_cls[s_cls]
+    cls = find_entity_class(rt.dt)
     return cls(ehandle=ehandle, stream_binding=stream_binding)
 
 @register_entity("DT_BaseEntity")
