@@ -11,9 +11,16 @@ TEAM_VALUES = {
 }
 
 WINNER_VALUES = {
-    2: "radiant",
-    3: "dire",
-    5: None
+  2: "radiant",
+  3: "dire",
+  5: None
+}
+
+TEAMINFO_TEAM_VALUES = {
+  0: 'Unassinged',
+  1: 'Spectator',
+  2: 'radiant',
+  3: 'dire'
 }
 
 LIFE_STATE_VALUES = {

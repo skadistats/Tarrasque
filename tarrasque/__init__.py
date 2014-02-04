@@ -9,6 +9,7 @@ from .ability import *
 from .gameevents import *
 from .combatlog import *
 from .item import *
+from .teaminfo import *
 
 from .buildings import *
 

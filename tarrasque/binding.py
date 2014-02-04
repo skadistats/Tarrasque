@@ -296,6 +296,15 @@ class StreamBinding(object):
     """
     from .buildings import BuildingManager
     return BuildingManager(self)
+  
+  @property
+  def teaminfo(self):
+    """
+    A list of :class:`Team` objects, one for each team in the game.
+    """
+    from .teaminfo import Teaminfo
+    return [t for t in Teaminfo.get_all(self) if
+            t.team_name != "Spectator" and t.team_name != "Unassigned"]
 	
   @staticmethod
   def from_file(filename, *args, **kwargs):
